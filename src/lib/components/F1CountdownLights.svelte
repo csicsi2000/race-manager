@@ -47,7 +47,8 @@
     }
   
     function fuzzedLightsOut() {
-      const fuzzyInterval = Math.random() * 1800 + 2400;
+      // delay for the lights
+      const fuzzyInterval = Math.random() * 2800 + 200;
       fuzzerId = setTimeout(() => {
         clearLights();
         startTime = Date.now();
