@@ -1,0 +1,23 @@
+{
+  "short_name": "svelte_slot_car_app",
+  "name": "svelte_slot_car_app",
+  "start_url": "https://sroehrl.github.io/svelte-flowbite-boilerplate/",
+  "icons": [
+    {
+      "src": "icon-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "icon-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ],
+  "background_color": "#546dd2",
+  "display": "standalone",
+  "scope": "/svelte_slot_car_app/",
+  "theme_color": "#546dd2",
+  "shortcuts": [],
+  "description": "Edit this information in static/maifest.json"
+}

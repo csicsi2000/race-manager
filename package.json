@@ -1,0 +1,51 @@
+{
+  "name": "svelte_slot_car_app",
+  "version": "0.2.1",
+  "private": false,
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
+  },
+  "author": {
+    "url": "https://neoan.us",
+    "name": "Neoan"
+  },
+  "license": "MIT",
+  "bin": {
+    "svelte-flowbite-boilerplate": "bin/index.cjs"
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-auto": "^3.0.0",
+    "@sveltejs/kit": "^2.0.0",
+    "@sveltejs/vite-plugin-svelte": "^3.0.0",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.32",
+    "postcss-load-config": "^5.0.2",
+    "svelte": "^4.2.7",
+    "svelte-check": "^3.6.2",
+    "tailwindcss": "^3.3.6",
+    "tslib": "^2.6.2",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.10"
+  },
+  "type": "module",
+  "dependencies": {
+    "@floating-ui/dom": "^1.5.3",
+    "@popperjs/core": "^2.11.8",
+    "@sveltejs/adapter-static": "^3.0.0",
+    "classnames": "^2.3.2",
+    "command-exists": "^1.2.9",
+    "cross-spawn": "^7.0.3",
+    "dayjs": "^1.11.10",
+    "flowbite": "^2.2.1",
+    "flowbite-svelte": "^0.44.20",
+    "flowbite-svelte-icons": "^0.4.5",
+    "flowbite-typography": "^1.0.3",
+    "svelte-i18n": "^4.0.0",
+    "tailwind-merge": "^2.1.0",
+    "values.js": "^2.1.1"
+  }
+}
