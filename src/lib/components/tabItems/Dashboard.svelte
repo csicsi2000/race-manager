@@ -1,7 +1,6 @@
 <script>
   import { RaceStatus } from "$lib/_types/enums/raceStatus";
-  import { raceInfo } from "$lib/stores/raceInfo";
-  import FormationView from "./dashboardViews/FormationView.svelte";
+  import { raceInfo, sessionStatus } from "$lib/stores/raceInfo";
   import PracticeView from "./dashboardViews/PracticeView.svelte";
   import RaceView from "./dashboardViews/RaceView.svelte";
 
@@ -9,11 +8,13 @@
   raceInfo.subscribe((x) => {
     status = x.raceStatus;
   });
+
+  sessionStatus.subscribe((x) => {
+    status = x;
+  })
 </script>
 
-{#if status == RaceStatus.FORMATION}
-  <FormationView />
-{:else if status == RaceStatus.RACE}
+{#if status == RaceStatus.RACE || status == RaceStatus.FORMATION}
   <RaceView />
 {:else}
   <PracticeView />

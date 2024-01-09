@@ -6,14 +6,18 @@
   } from "flowbite-svelte";
   import F1CountdownLights from "$lib/components/F1CountdownLights.svelte";
   import { RaceStatus } from "$lib/_types/enums/raceStatus";
-  import { raceInfo } from "$lib/stores/raceInfo";
+  import { raceInfo, sessionStatus } from "$lib/stores/raceInfo";
   import addRacers from "$lib/utils/addTestData";
   import NavigationTabs from "$lib/components/NavigationTabs.svelte";
 
+  let lights: F1CountdownLights;
+
+  
   let currentState = RaceStatus.PRACTICE;
-  raceInfo.subscribe((x) => {
-    currentState = x.raceStatus;
-  });
+
+  sessionStatus.subscribe((x) => {
+    currentState = x;
+  })
 
   addRacers();
 </script>
@@ -21,7 +25,7 @@
 <div class="w-4/5 lg:max-w-screen-lg mx-auto">
     <NavigationTabs></NavigationTabs>
   <section>
-    <F1CountdownLights />
+    <F1CountdownLights bind:this={lights}/>
   </section>
 </div>
 <BottomNav position="fixed" navType="group" classInner="grid-cols-5">

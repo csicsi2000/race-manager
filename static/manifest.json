@@ -1,7 +1,7 @@
 {
   "short_name": "svelte_slot_car_app",
   "name": "svelte_slot_car_app",
-  "start_url": "https://sroehrl.github.io/svelte-flowbite-boilerplate/",
+  "start_url": "https://csicsi2000.github.io/svelte-slot-car-race-management/",
   "icons": [
     {
       "src": "icon-512x512.png",

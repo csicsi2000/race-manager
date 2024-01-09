@@ -1,4 +1,3 @@
-
 # Slot car lap counter
 
 This project will communicate with an esp board using websocket and display information about an analog slot car race status, or simply measure lap times.

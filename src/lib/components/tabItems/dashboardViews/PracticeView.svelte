@@ -1,6 +1,7 @@
 <script lang="ts">
+  import { RaceStatus } from "$lib/_types/enums/raceStatus";
   import type Racer from "$lib/_types/racer";
-  import { raceInfo } from "$lib/stores/raceInfo";
+  import { raceInfo, sessionStatus } from "$lib/stores/raceInfo";
   import {
     Table,
     TableBody,
@@ -10,7 +11,7 @@
     TableHeadCell,
     Checkbox,
     TableSearch,
-    Heading,
+    Heading, Button
   } from "flowbite-svelte";
 
   let racers: Racer[] = [];
@@ -32,8 +33,13 @@
     }
     return bestTime;
   }
+
+  function startFormation(){
+    sessionStatus.set(RaceStatus.FORMATION)
+  }
 </script>
 
+<div class="grid gap-6 mb-6">
 <div class="grid gap-6 mb-6 md:grid-cols-2">
   {#each racers as racer}
   <div>
@@ -66,4 +72,7 @@
     </Table>
     </div>
   {/each}
+  </div>
+  <Button >New Practice Session</Button>
+  <Button on:click={startFormation}>Start Race</Button>
 </div>

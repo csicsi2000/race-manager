@@ -42,10 +42,10 @@
 
       </Card>
     </div>
-    <div class="mb-6">
-      <Label>
-        Select an option
-        <Select class="mt-2" items={raceStates} bind:value={selectedState} />
-      </Label>
+    <div class="grid gap-6 mb-6">
+      <div>
+        <Label for="slot_2_name" class="mb-2">Race Lap Count</Label>
+        <Input type="number" id="slot_2_name" placeholder="10"/>
+      </div>
     </div>
 </form>

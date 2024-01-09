@@ -12,7 +12,7 @@
       </p>
     </TabItem>
     <TabItem class="w-full">
-        <span slot="title">Race Management</span>
+        <span slot="title">Settings</span>
         <div class="w-4/5 lg:max-w-screen-lg mx-auto">
       <p class="text-sm text-gray-500 dark:text-gray-400">
         <RacersSettings></RacersSettings>
