@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { LightColors } from "$lib/_types/enums/LightColors";
   import type Light from "$lib/_types/light";
 
   export let lightCol: Light[];

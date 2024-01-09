@@ -4,7 +4,8 @@ import { LightColors } from "$lib/_types/enums/LightColors";
     import LightStrip from '$lib/components/animations/LightStrip.svelte';
   import { Button } from 'flowbite-svelte';
   import { LightStates } from '$lib/_types/enums/LightStates';
-  
+  import {base} from "$app/paths";
+
     const LIGHT_ON_INTERVAL = 1000;
   
     let state = LightStates.IDLE;
@@ -17,8 +18,8 @@ import { LightColors } from "$lib/_types/enums/LightColors";
 
     let lights : Light[][] = [];
 
-    let audioStartLights = new Audio('/sounds/F1-Start-light-sound.mp3');
-    let audioLightsOut = new Audio('/sounds/lights-out.mp3')
+    let audioStartLights = new Audio(base+'/sounds/F1-Start-light-sound.mp3');
+    let audioLightsOut = new Audio(base+'/sounds/lights-out.mp3')
 
     for(let i = 0; i < 5; i++){
         lights.push([])
