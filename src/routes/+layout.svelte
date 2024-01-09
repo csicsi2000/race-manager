@@ -5,12 +5,13 @@
   import {base} from "$app/paths";
   import {GithubSolid} from "flowbite-svelte-icons";
   import ReusableModal from "$lib/components/ReusableModal.svelte";
+  import NavigationTabs from "$lib/components/NavigationTabs.svelte";
 </script>
 <Navbar class="z-10" let:hidden let:toggle>
     <NavBrand>
         <DarkMode/>
         <span class="self-center whitespace-nowrap text-xl font-semibold dark:text-white pl-3">
-      <a href="{base}/">Svelte kit / Flowbite - starter </a>
+      <a href="{base}/">Carrera Go lap counter</a>
     </span>
     </NavBrand>
     <NavHamburger on:click={toggle} />
@@ -25,3 +26,4 @@
 <slot />
     <ReusableModal/>
 </div>
+<div class="min-h-12"/>

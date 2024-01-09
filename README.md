@@ -13,6 +13,10 @@ This project will communicate with an esp board using websocket and display info
 
 [f1-lights](https://github.com/jan25/f1-lights)
 
+## Confetti
+
+[js-confetti](https://www.npmjs.com/package/js-confetti)
+
 # Notes
 
 ## Light signals
