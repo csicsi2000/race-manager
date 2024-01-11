@@ -40,12 +40,14 @@
     "command-exists": "^1.2.9",
     "cross-spawn": "^7.0.3",
     "dayjs": "^1.11.10",
+    "dexie": "^4.0.1-beta.6",
     "flowbite": "^2.2.1",
     "flowbite-svelte": "^0.44.20",
     "flowbite-svelte-icons": "^0.4.5",
     "flowbite-typography": "^1.0.3",
     "svelte-i18n": "^4.0.0",
     "tailwind-merge": "^2.1.0",
-    "values.js": "^2.1.1"
+    "values.js": "^2.1.1",
+    "websocket-ts": "^2.1.5"
   }
 }

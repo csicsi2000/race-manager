@@ -1,13 +1,12 @@
 <script lang="ts">
   import Light from "$lib/_types/light";
-  import { LightColors } from "$lib/_types/enums/LightColors";
+  import { LightColors } from "$lib/_types/enums/lightColors";
   import LightStrip from "$lib/components/animations/LightStrip.svelte";
   import { Button, Modal } from "flowbite-svelte";
-  import { LightStates } from "$lib/_types/enums/LightStates";
+  import { LightStates } from "$lib/_types/enums/lightStates";
   import { base } from "$app/paths";
   import { raceInfo, sessionStatus } from "$lib/stores/raceInfo";
   import { RaceStatus } from "$lib/_types/enums/raceStatus";
-  import type { RaceInfo } from "$lib/_types/raceInfo";
   import { formatMs } from "$lib/utils/converters";
 
   const LIGHT_ON_INTERVAL = 1000;

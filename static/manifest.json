@@ -4,13 +4,7 @@
   "start_url": "https://csicsi2000.github.io/svelte-slot-car-race-management/",
   "icons": [
     {
-      "src": "icon-512x512.png",
-      "type": "image/png",
-      "sizes": "512x512"
-    },
-    {
-      "src": "icon-192x192.png",
-      "type": "image/png",
+      "src": "icon-192x192.ico",
       "sizes": "192x192"
     }
   ],

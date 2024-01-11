@@ -4,7 +4,6 @@
 
     export let textToCopy:string;
 
-    export let size = "md";
 
     let open = false;
     function copy() {
@@ -18,7 +17,7 @@
 
 <div class="cursor-pointer" role="button" tabindex="0" on:click={copy} on:keydown={e => e.key === "Enter" && copy}>
     <slot>
-        <ClipboardOutline size={size} class="text-primary-400 text-inherit"/>
+        <ClipboardOutline size="md" class="text-primary-400 text-inherit"/>
     </slot>
 </div>
 <div class="absolute">
