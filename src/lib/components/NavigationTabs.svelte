@@ -19,11 +19,4 @@
       </p>
       </div>
     </TabItem>
-    <TabItem class="w-full">
-      <span slot="title">Records</span>
-      <p class="text-sm text-gray-500 dark:text-gray-400">
-        <b>Users:</b>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-      </p>
-    </TabItem>
   </Tabs>

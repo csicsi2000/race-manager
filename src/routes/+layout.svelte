@@ -1,6 +1,6 @@
 <script>
   import "../app.postcss";
-  import {DarkMode, Navbar, NavBrand, NavHamburger, NavLi, NavUl} from "flowbite-svelte";
+  import {DarkMode, Navbar, NavBrand, NavHamburger, NavLi, NavUl, Badge} from "flowbite-svelte";
   import {page} from "$app/stores";
   import {base} from "$app/paths";
   import {GithubSolid} from "flowbite-svelte-icons";
@@ -14,14 +14,17 @@
     </NavBrand>
     <NavHamburger on:click={toggle} />
     <NavUl {hidden}>
-        <NavLi href="{base}/records" active={$page.url.pathname.endsWith('records')}>Records</NavLi>
+        <NavLi href="{base}/raceHistory" active={$page.url.pathname.endsWith('raceHistory')}>Race History</NavLi>
         <NavLi href="{base}/credits" active={$page.url.pathname.endsWith('credits')}>Credits</NavLi>
         <NavLi href="https://github.com/sroehrl/svelte-flowbite-boilerplate#readme" >
             <GithubSolid/>
         </NavLi>
     </NavUl>
 </Navbar>
-<div class="my-5">
+<div class="my-3">
+  <div class="flex items-center justify-center">
+<Badge class="" rounded large color="red">Disconnected</Badge>
+</div>
 <slot />
 </div>
 <div class="min-h-12"/>
