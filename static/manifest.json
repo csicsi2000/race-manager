@@ -1,6 +1,6 @@
 {
-  "short_name": "svelte_slot_car_app",
-  "name": "svelte_slot_car_app",
+  "short_name": "Race manager",
+  "name": "slot car race manager",
   "start_url": "https://csicsi2000.github.io/svelte-slot-car-race-management/",
   "icons": [
     {
