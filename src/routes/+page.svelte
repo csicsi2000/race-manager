@@ -6,7 +6,7 @@
   } from "flowbite-svelte";
   import F1CountdownLights from "$lib/components/F1CountdownLights.svelte";
   import { RaceStatus } from "$lib/_types/enums/raceStatus";
-  import { raceInfo, sessionStatus } from "$lib/stores/currentRaceInfo";
+  import { raceInfo, sessionStatus } from "$lib/stores/raceInfos";
   import addRacers from "$lib/utils/addTestData";
   import NavigationTabs from "$lib/components/NavigationTabs.svelte";
 

@@ -33,19 +33,7 @@ export let manualScrollOnly: boolean;
     }
   }
 
-  function getBestLapTime(lapTimes: number[]) {
-    let bestTime = lapTimes[lapTimes.length - 1] - lapTimes[0];
-    for (let i = 1; i < lapTimes.length; i++) {
-      let current = lapTimes[i] - lapTimes[i - 1];
-      if (current == 0) {
-        continue;
-      }
-      if (current < bestTime) {
-        bestTime = current;
-      }
-    }
-    return bestTime;
-  }
+
 </script>
 
 <div>
@@ -56,13 +44,13 @@ export let manualScrollOnly: boolean;
   >
   <caption
   bind:this={tableChild}
-  class="p-5 text-lg font-semibold text-left text-gray-900 bg-white dark:text-white dark:bg-gray-900 sticky top-0"
+  class="p-5 text-lg font-semibold text-left text-gray-900 bg-white dark:text-white dark:bg-gray-900 sticky top-[-1px]"
   >
   {racer.name}
   <div class="grid gap-6 mb-6 grid-cols-2">
 
       <p class="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
-        Best lap time: {getBestLapTime(racer.lapTimes)}
+        Best lap time: {racer.getBestLapTime()}
       </p>
       <Toggle bind:checked={isAutoScrolling}>Auto scroll</Toggle>
   </div>

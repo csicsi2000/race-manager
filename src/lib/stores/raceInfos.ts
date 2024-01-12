@@ -6,3 +6,4 @@ export const raceInfo = writable(new RaceInfo(RaceStatus.PRACTICE));
 
 export const sessionStatus = writable(RaceStatus.PRACTICE);
 
+export const newRaceInfo = writable(new RaceInfo(RaceStatus.RACE));

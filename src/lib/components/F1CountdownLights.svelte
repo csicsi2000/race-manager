@@ -5,7 +5,7 @@
   import { Button, Modal } from "flowbite-svelte";
   import { LightStates } from "$lib/_types/enums/lightStates";
   import { base } from "$app/paths";
-  import { raceInfo, sessionStatus } from "$lib/stores/currentRaceInfo";
+  import { raceInfo, sessionStatus } from "$lib/stores/raceInfos";
   import { RaceStatus } from "$lib/_types/enums/raceStatus";
   import { formatMs } from "$lib/utils/converters";
 
@@ -46,6 +46,7 @@ sessionStatus.subscribe(x => {
   function cancelRace(){
     clearLights();
     sessionStatus.set(RaceStatus.PRACTICE);
+    modalState =false;
   }
 
   //#region Start race
@@ -71,6 +72,7 @@ sessionStatus.subscribe(x => {
 
       return result;
   }
+
   function pauseCountDown(){
     if (state === LightStates.RUNNING) {
       state = LightStates.IDLE;
@@ -112,7 +114,7 @@ sessionStatus.subscribe(x => {
       startTime = Date.now();
       state = LightStates.WAITING;
       audioLightsOut.play();
-      setTimeout(() => modalState = false, 5000);
+      setTimeout(() => modalState = false, 3000);
     }, fuzzyInterval);
   }
 
