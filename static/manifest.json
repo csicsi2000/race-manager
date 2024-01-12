@@ -1,6 +1,7 @@
 {
   "short_name": "Race manager",
   "name": "slot car race manager",
+  "scope": "/svelte-slot-car-race-management/",
   "start_url": "https://csicsi2000.github.io/svelte-slot-car-race-management/",
   "icons": [
     {
@@ -10,7 +11,6 @@
   ],
   "background_color": "#546dd2",
   "display": "standalone",
-  "scope": "/svelte_slot_car_app/",
   "theme_color": "#546dd2",
   "shortcuts": [],
   "description": "Edit this information in static/maifest.json"
