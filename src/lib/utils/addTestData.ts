@@ -35,8 +35,6 @@ async function simulateLaps(): Promise<void> {
         oldRaceInfo.racers[0].lapTimes.push(time);
         time = time + 30;
       raceInfo.set(oldRaceInfo);
-      console.log(oldRaceInfo);
-      // Wait for 2 seconds before running again
       await new Promise((resolve) => setTimeout(resolve, 2000));
     }
   }

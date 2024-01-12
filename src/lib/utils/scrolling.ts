@@ -1,11 +1,14 @@
-import type { SvelteComponent } from "svelte";
-
 export function scrollToBottom(node:HTMLElement){
-    const scroll = () => node.scroll({
-        top: node.scrollHeight,
-        behavior: 'smooth',
+
+    console.log(node.scrollHeight)
+    node.scrollTo({
+        top: node.scrollHeight - 100,
+        behavior: 'smooth',        
     });
-    scroll();
-    console.log("Scrolling to bottom " )
+    node.scrollBy({
+        top: node.scrollHeight - 100,
+        behavior: 'smooth',
+        
+    });
     return { update: scroll }
 };

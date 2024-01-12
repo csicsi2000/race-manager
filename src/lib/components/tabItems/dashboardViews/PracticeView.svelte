@@ -29,8 +29,8 @@
 
 <div class="grid gap-6 mb-6">
   <div class="grid gap-6 mb-6 md:grid-cols-2">
-    {#each racers as racer}
-      <RacerData bind:racer={racer}/>
+    {#each racers as racer,index(index)}
+      <RacerData bind:racer={racer} manualScrollOnly={false}/>
     {/each}
   </div>
   <Button>New Practice Session</Button>
