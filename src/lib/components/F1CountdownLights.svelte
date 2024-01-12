@@ -1,6 +1,6 @@
 <script lang="ts">
   import Light from "$lib/_types/light";
-  import { LightColors } from "../_types/enums/lightColors";
+  import { LightColors } from "$lib/_types/enums/lightColors";
   import LightStrip from "$lib/components/animations/LightStrip.svelte";
   import { Button, Modal } from "flowbite-svelte";
   import { LightStates } from "$lib/_types/enums/lightStates";
