@@ -5,7 +5,7 @@
   import { Button, Modal } from "flowbite-svelte";
   import { LightStates } from "$lib/_types/enums/lightStates";
   import { base } from "$app/paths";
-  import { raceInfo, sessionStatus } from "$lib/stores/raceInfo";
+  import { raceInfo, sessionStatus } from "$lib/stores/currentRaceInfo";
   import { RaceStatus } from "$lib/_types/enums/raceStatus";
   import { formatMs } from "$lib/utils/converters";
 

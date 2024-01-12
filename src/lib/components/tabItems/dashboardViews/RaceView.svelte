@@ -1,7 +1,7 @@
 <script lang="ts">
   import { RaceStatus } from "$lib/_types/enums/raceStatus";
   import type Racer from "$lib/_types/racer";
-  import { raceInfo, sessionStatus } from "$lib/stores/raceInfo";
+  import { raceInfo, sessionStatus } from "$lib/stores/currentRaceInfo";
   import {
     Table,
     TableBody,

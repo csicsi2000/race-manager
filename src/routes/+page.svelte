@@ -6,7 +6,7 @@
   } from "flowbite-svelte";
   import F1CountdownLights from "$lib/components/F1CountdownLights.svelte";
   import { RaceStatus } from "$lib/_types/enums/raceStatus";
-  import { raceInfo, sessionStatus } from "$lib/stores/raceInfo";
+  import { raceInfo, sessionStatus } from "$lib/stores/currentRaceInfo";
   import addRacers from "$lib/utils/addTestData";
   import NavigationTabs from "$lib/components/NavigationTabs.svelte";
 
@@ -22,7 +22,7 @@
   addRacers();
 </script>
 
-<div class="w-4/5 lg:max-w-screen-lg mx-auto">
+<div class="lg:max-w-screen-lg mx-auto">
     <NavigationTabs></NavigationTabs>
   <section>
     <F1CountdownLights bind:this={lights}/>

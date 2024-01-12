@@ -1,6 +1,6 @@
 <script>
     import { Tabs, TabItem } from 'flowbite-svelte';
-  import RacersSettings from './tabItems/RaceManagement.svelte';
+  import RacersSettings from './tabItems/Settings.svelte';
   import Dashboard from './tabItems/Dashboard.svelte';
   </script>
   

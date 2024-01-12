@@ -1,6 +1,6 @@
 <script>
   import { RaceStatus } from "$lib/_types/enums/raceStatus";
-  import { raceInfo, sessionStatus } from "$lib/stores/raceInfo";
+  import { raceInfo, sessionStatus } from "$lib/stores/currentRaceInfo";
   import PracticeView from "./dashboardViews/PracticeView.svelte";
   import RaceView from "./dashboardViews/RaceView.svelte";
 
@@ -15,7 +15,7 @@
 </script>
 
 {#if status == RaceStatus.RACE || status == RaceStatus.FORMATION}
-  <RaceView />
+  <RaceView  />
 {:else}
   <PracticeView />
 {/if}
