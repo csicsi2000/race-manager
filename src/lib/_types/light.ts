@@ -1,4 +1,4 @@
-import { LightColors } from "./enums/LightColors";
+import { LightColors } from "./enums/lightColors";
 
 export default class Light{
     id: number = 0
