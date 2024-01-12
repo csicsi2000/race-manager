@@ -44,7 +44,7 @@ export let manualScrollOnly: boolean;
   >
   <caption
   bind:this={tableChild}
-  class="p-5 text-lg font-semibold text-left text-gray-900 bg-white dark:text-white dark:bg-gray-900 sticky top-[-1px]"
+  class="p-5 text-lg font-semibold text-left text-gray-900 bg-gray-200 dark:text-white dark:bg-gray-900 sticky top-[-1px]"
   >
   {racer.name}
   <div class="grid gap-6 mb-6 grid-cols-2">
@@ -56,7 +56,7 @@ export let manualScrollOnly: boolean;
   </div>
     </caption>
 
-    <TableHead theadClass="sticky top-20 dark:bg-gray-900 bg-gray-300">
+    <TableHead theadClass="sticky top-20 dark:bg-gray-900 bg-gray-200">
       <TableHeadCell>Lap</TableHeadCell>
       <TableHeadCell>Lap Time</TableHeadCell>
       <TableHeadCell>Overall Tap Time</TableHeadCell>
