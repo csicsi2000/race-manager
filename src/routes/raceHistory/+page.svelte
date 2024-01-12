@@ -8,6 +8,6 @@ raceHistory.subscribe( x => raceInfos = x);
 
 <div class="w-4/5 lg:max-w-screen-lg mx-auto">
     {#each raceInfos as race}
-        
+        <p>{race.raceName}</p>
     {/each}
 </div>
