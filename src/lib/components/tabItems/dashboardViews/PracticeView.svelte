@@ -1,29 +1,31 @@
 <script lang="ts">
   import { RaceStatus } from "$lib/_types/enums/raceStatus";
-  import type Racer from "$lib/_types/racer";
-  import { raceInfo, sessionStatus } from "$lib/stores/raceInfos";
+  import Racer from "$lib/_types/racer";
+  import { currentRaceInfo, newRaceInfo, sessionStatus } from "$lib/stores/raceInfos";
   import {
-    Table,
-    TableBody,
-    TableBodyCell,
-    TableBodyRow,
-    TableHead,
-    TableHeadCell,
-    Checkbox,
-    TableSearch,
-    Heading,
     Button,
   } from "flowbite-svelte";
   import RacerData from "$lib/components/dataDisplay/RacerData.svelte";
+  import { LocalStorageDatabase } from "$lib/storage/localstorage/localStorageDatabase";
+  import { RaceInfo } from "$lib/_types/raceInfo";
 
   let racers: Racer[] = [];
-  raceInfo.subscribe((x) => {
+  currentRaceInfo.subscribe((x) => {
     racers = x.racers;
+    console.log("Racers changed")
   });
 
 
   function startFormation() {
     sessionStatus.set(RaceStatus.FORMATION);
+  }
+
+  function newPracticeSession(){
+    let database = new LocalStorageDatabase();
+    database.putRaceInfo($currentRaceInfo);
+    let newPractice = structuredClone($newRaceInfo);
+    console.log(newPractice);
+    currentRaceInfo.set(newPractice);
   }
 </script>
 
@@ -33,6 +35,6 @@
       <RacerData bind:racer={racer} manualScrollOnly={false}/>
     {/each}
   </div>
-  <Button>New Practice Session</Button>
+  <Button on:click={newPracticeSession}>New Practice Session</Button>
   <Button on:click={startFormation}>Start Race</Button>
 </div>

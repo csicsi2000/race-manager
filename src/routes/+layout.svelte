@@ -28,7 +28,11 @@
     </span>
   </NavBrand>
   <NavHamburger on:click={toggle} />
-  <NavUl {hidden}>
+  <NavUl >
+    <NavLi
+    href="{base}/"
+    active={$page.url.pathname.endsWith("/")}>Home</NavLi
+  >
     <NavLi
       href="{base}/raceHistory"
       active={$page.url.pathname.endsWith("raceHistory")}>Race History</NavLi

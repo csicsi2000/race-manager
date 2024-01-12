@@ -1,6 +1,6 @@
 <script lang="ts">
   import { RaceStatus } from '$lib/_types/enums/raceStatus';
-  import { raceInfo, newRaceInfo } from '$lib/stores/raceInfos';
+  import { currentRaceInfo, newRaceInfo } from '$lib/stores/raceInfos';
   import { connection, connectedIP } from '$lib/stores/sensorStatus';
     import { Input, Label,Card, Heading,Select } from 'flowbite-svelte';
 
@@ -23,10 +23,10 @@
         <Input type="text" id="connected_ip " placeholder="127.0.0.1" bind:value={$connectedIP}/>
       </div>
     </div>
-    <div class="grid gap-6 mb-6 md:grid-cols-2">
-      {#each $raceInfo.racers as racer}
-      <Card class="grid gap-6 mb-6">
-        <Heading tag="h2" class="mb-4">{racer.name}</Heading>
+    <div class="grid mb-6 md:grid-cols-2">
+      {#each $newRaceInfo.racers as racer}
+      <Card class="grid gap-2 mb-6">
+        <Heading tag="h3" class="mb-4">{racer.name}</Heading>
         <div>
           <Label for="slot_1_name" class="mb-2">Name</Label>
           <Input type="text" id="slot_1_name" placeholder="Slot 1" bind:value={racer.name} />
@@ -38,8 +38,8 @@
       </Card>
       {/each}
     </div>
-    <div class="grid gap-6 grid-col-1">
-        <Heading tag="h2" class="mb-4">New Race</Heading>
+    <div class="grid gap-4 grid-col-1">
+        <Heading tag="h3" class="mb-4">New Race</Heading>
         <div>
           <Label for="race_name" class="mb-2">Race Name</Label>
           <Input type="text" id="race_name" placeholder="name" bind:value={$newRaceInfo.raceName}/>

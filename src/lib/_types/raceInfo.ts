@@ -1,5 +1,5 @@
 import { RaceStatus } from "./enums/raceStatus";
-import type Racer from "./racer";
+import Racer from "./racer";
 import { uniqueNamesGenerator, adjectives, colors, animals, type Config  } from 'unique-names-generator';
 
 const customConfig: Config= {
@@ -23,5 +23,12 @@ export class RaceInfo{
         this.raceStatus = raceStatus;
         this.startDate = new Date(Date.now()); 
         this.raceName = uniqueNamesGenerator(customConfig) +" "+RaceStatus[raceStatus];
+
+        this.addRacer("Slot_1");
+        this.addRacer("Slot_2");
+    }
+
+    private addRacer(name:string){
+        this.racers.push(new Racer(this.racers.length, name));
     }
 }

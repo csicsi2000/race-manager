@@ -1,5 +1,6 @@
 <script lang="ts">
   import type Racer from "$lib/_types/racer";
+  import { getBestLapTime } from "$lib/utils/racerHelpers";
   import { scrollToBottom } from "$lib/utils/scrolling";
   import {
     Table,
@@ -22,6 +23,8 @@ export let manualScrollOnly: boolean;
   let tableChild: HTMLElement | undefined;
   let isAutoScrolling = true;
 
+  let bestLapTime = 0;
+
   $: {
     if (racer.lapTimes.length > 0 && tableChild && !manualScrollOnly && isAutoScrolling) {
       let tableNode = tableChild.parentNode?.parentNode;
@@ -32,8 +35,6 @@ export let manualScrollOnly: boolean;
       }, 100);
     }
   }
-
-
 </script>
 
 <div>
@@ -50,7 +51,7 @@ export let manualScrollOnly: boolean;
   <div class="grid gap-6 mb-6 grid-cols-2">
 
       <p class="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
-        Best lap time: {racer.getBestLapTime()}
+        Best lap time: {getBestLapTime(racer)}
       </p>
       <Toggle bind:checked={isAutoScrolling}>Auto scroll</Toggle>
   </div>

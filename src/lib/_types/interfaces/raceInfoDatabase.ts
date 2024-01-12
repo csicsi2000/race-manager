@@ -6,5 +6,8 @@ export interface RaceInfoDatabase{
     putRaceInfo(raceInfo:RaceInfo):boolean;
     deleteRaceInfo(id:string):boolean;
 
+    storeRaceConfig(info: RaceInfo):boolean;
+    getRaceConfig():RaceInfo;
+
     readonly eventName: string;
 }

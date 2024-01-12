@@ -5,7 +5,7 @@
   import { Button, Modal } from "flowbite-svelte";
   import { LightStates } from "$lib/_types/enums/lightStates";
   import { base } from "$app/paths";
-  import { raceInfo, sessionStatus } from "$lib/stores/raceInfos";
+  import { currentRaceInfo, sessionStatus, newRaceInfo } from "$lib/stores/raceInfos";
   import { RaceStatus } from "$lib/_types/enums/raceStatus";
   import { formatMs } from "$lib/utils/converters";
 
@@ -127,6 +127,10 @@ sessionStatus.subscribe(x => {
       col[1].color = LightColors.green;
     });
     state = LightStates.FORMATION;
+
+    let prepareRace = $newRaceInfo;
+    prepareRace.raceStatus = RaceStatus.RACE;
+    currentRaceInfo.set(prepareRace);
   }
   //#endregion
 

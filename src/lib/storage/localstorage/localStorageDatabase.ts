@@ -1,9 +1,30 @@
+import { RaceStatus } from "$lib/_types/enums/raceStatus";
 import type { RaceInfoDatabase } from "$lib/_types/interfaces/raceInfoDatabase";
 import { RaceInfo } from "$lib/_types/raceInfo";
 
 const dataName = "RaceInfoDatabase";
+const config = "RaceInfoConfig";
 
 export class LocalStorageDatabase implements RaceInfoDatabase {
+    storeRaceConfig(info: RaceInfo): boolean {
+        localStorage.setItem(config, JSON.stringify(config));
+        return true;
+    }
+
+    getRaceConfig(): RaceInfo {
+        try {
+            let allData = localStorage.getItem(config);
+            if (typeof allData === 'string') {
+                let formatted = JSON.parse(allData) as RaceInfo
+                return formatted;
+            }
+        }
+        finally {
+            console.log("Config set failed.");
+            return new RaceInfo(RaceStatus.PRACTICE);
+        }
+    }
+
     readonly eventName = "raceHistoryChanged";
     private event = new Event(this.eventName);
 
