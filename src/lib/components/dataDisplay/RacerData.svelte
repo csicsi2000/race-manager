@@ -14,6 +14,7 @@
     Button,
     Toggle
   } from "flowbite-svelte";
+  import { onMount } from "svelte";
 
   export let racer: Racer;
 export let manualScrollOnly: boolean;
@@ -28,7 +29,6 @@ export let manualScrollOnly: boolean;
         if (tableNode instanceof HTMLElement  && isAutoScrolling) {
           scrollToBottom(tableNode);
         }
-        console.log("Scroll success " + racer.name);
       }, 100);
     }
   }
