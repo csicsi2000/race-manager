@@ -59,7 +59,7 @@ export let manualScrollOnly: boolean;
   class="p-5 text-lg font-semibold text-left text-gray-900 bg-white dark:text-white dark:bg-gray-900 sticky top-0"
   >
   {racer.name}
-  <div class="grid gap-6 mb-6 md:grid-cols-2">
+  <div class="grid gap-6 mb-6 grid-cols-2">
 
       <p class="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
         Best lap time: {getBestLapTime(racer.lapTimes)}
