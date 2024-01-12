@@ -8,12 +8,12 @@ export default function addRacers(){
 
     let racer1 = new Racer(0,"test_1")
     racer1.name = "Béla"
-    racer1.lapTimes = [4,765,43563,345636,243,234,324,234,324,234,324]
+    racer1.lapTimes = []
 
     let racer2 = new Racer(1,"")
 
     racer2.name = "Ági"
-    racer2.lapTimes = [1,5,7,122,912]
+    racer2.lapTimes = []
 
     info.racers.push(racer1)
     info.racers.push(racer2)

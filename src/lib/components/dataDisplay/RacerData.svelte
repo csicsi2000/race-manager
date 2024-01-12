@@ -52,7 +52,7 @@ export let manualScrollOnly: boolean;
   <Table
     shadow
     striped={true}
-    divClass="dark:bg-gray-600 max-h-[70svh] overflow-y-scroll"
+    divClass="dark:bg-gray-600 max-h-[70svh] h-[70svh] overflow-y-auto scroll-auto scroll-smooth no-scrollbar"
   >
   <caption
   bind:this={tableChild}
