@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type Light from "$lib/_types/light";
+  import Light from "$lib/_types/light"
 
   export let lightCol: Light[];
 </script>

@@ -7,3 +7,5 @@ export const currentRaceInfo = writable(new RaceInfo(RaceStatus.PRACTICE));
 export const sessionStatus = writable(RaceStatus.PRACTICE);
 
 export const newRaceInfo = writable(new RaceInfo(RaceStatus.RACE));
+
+export const isFirstRun = writable(true);

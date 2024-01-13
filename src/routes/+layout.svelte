@@ -14,11 +14,22 @@
   import { GithubSolid } from "flowbite-svelte-icons";
   import { connection } from "$lib/stores/sensorStatus";
   import { ConnectionStatus } from "$lib/_types/enums/connectionStatus";
+  import { fade } from "svelte/transition";
+  import { onNavigate } from '$app/navigation';
 
-  ConnectionStatus.DISCONNECTED;
+  onNavigate((navigation) => {
+	if (!document.startViewTransition) return;
+
+	return new Promise((resolve) => {
+		document.startViewTransition(async () => {
+			resolve();
+			await navigation.complete;
+		});
+	});
+});
 </script>
 
-<Navbar class="z-10" let:hidden let:toggle>
+<Navbar class="z-10 bg-gray-200" let:toggle>
   <NavBrand>
     <DarkMode />
     <span
@@ -40,7 +51,7 @@
     <NavLi href="{base}/credits" active={$page.url.pathname.endsWith("credits")}
       >Credits</NavLi
     >
-    <NavLi href="https://github.com/sroehrl/svelte-flowbite-boilerplate#readme">
+    <NavLi href="https://github.com/csicsi2000/svelte-slot-car-race-management">
       <GithubSolid />
     </NavLi>
   </NavUl>
@@ -53,6 +64,6 @@
       <Badge class="" rounded large color="green">Connected</Badge>
     {/if}
   </div>
-  <slot />
+  <slot/>
 </div>
 <div class="min-h-12" />

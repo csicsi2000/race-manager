@@ -5,9 +5,10 @@
   import { Button, Modal } from "flowbite-svelte";
   import { LightStates } from "$lib/_types/enums/lightStates";
   import { base } from "$app/paths";
-  import { currentRaceInfo, sessionStatus, newRaceInfo } from "$lib/stores/raceInfos";
+  import { sessionStatus, newRaceInfo } from "$lib/stores/raceInfos";
   import { RaceStatus } from "$lib/_types/enums/raceStatus";
   import { formatMs } from "$lib/utils/converters";
+  import { newRaceSession } from "$lib/utils/raceInfoSession";
 
   const LIGHT_ON_INTERVAL = 1000;
 
@@ -128,9 +129,7 @@ sessionStatus.subscribe(x => {
     });
     state = LightStates.FORMATION;
 
-    let prepareRace = $newRaceInfo;
-    prepareRace.raceStatus = RaceStatus.RACE;
-    currentRaceInfo.set(prepareRace);
+    newRaceSession();
   }
   //#endregion
 

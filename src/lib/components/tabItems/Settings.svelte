@@ -1,8 +1,9 @@
 <script lang="ts">
   import { RaceStatus } from '$lib/_types/enums/raceStatus';
-  import { currentRaceInfo, newRaceInfo } from '$lib/stores/raceInfos';
+  import {  newRaceInfo } from '$lib/stores/raceInfos';
   import { connection, connectedIP } from '$lib/stores/sensorStatus';
-    import { Input, Label,Card, Heading,Select } from 'flowbite-svelte';
+    import { Input, Label,Card, Heading,Select, Button } from 'flowbite-svelte';
+    import { LocalStorageDatabase } from "$lib/storage/localstorage/localStorageDatabase";
 
     let raceStates: any[] = [];
 
@@ -14,6 +15,11 @@
         name: state
       })
     }
+
+    function storeRaceConfig(){
+      let database = new LocalStorageDatabase();
+      database.storeRaceConfig($newRaceInfo);
+    }
   </script>
   
   <form>
@@ -23,7 +29,7 @@
         <Input type="text" id="connected_ip " placeholder="127.0.0.1" bind:value={$connectedIP}/>
       </div>
     </div>
-    <div class="grid mb-6 md:grid-cols-2">
+    <div class="grid mb-6 md:grid-cols-2 gap-2">
       {#each $newRaceInfo.racers as racer}
       <Card class="grid gap-2 mb-6">
         <Heading tag="h3" class="mb-4">{racer.name}</Heading>
@@ -48,5 +54,6 @@
           <Label for="race_lap_count" class="mb-2">Race Lap Count</Label>
           <Input type="number" id="race_lap_count" placeholder="10" bind:value={$newRaceInfo.lapCount}/>
         </div>
+        <Button color="blue" on:click={storeRaceConfig}>Save configuration</Button>
     </div>
 </form>

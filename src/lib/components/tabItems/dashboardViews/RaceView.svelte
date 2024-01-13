@@ -10,6 +10,7 @@
   } from "flowbite-svelte";
   import autoAnimate from "@formkit/auto-animate"
   import { getMillisBehind } from "$lib/utils/racerHelpers";
+  import { newPracticeSession } from "$lib/utils/raceInfoSession";
 
   let racers: Racer[] = [];
   currentRaceInfo.subscribe((x) => {
@@ -18,8 +19,13 @@
     console.log(racers)
   });
 
+  function endRace(){
+    
+  }
+
   function cancelRace() {
     sessionStatus.set(RaceStatus.PRACTICE);
+    newPracticeSession();
   }
 
   let currentLap = 1;

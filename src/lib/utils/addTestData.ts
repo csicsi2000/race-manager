@@ -2,16 +2,14 @@ import { RaceStatus } from "$lib/_types/enums/raceStatus";
 import { RaceInfo } from "$lib/_types/raceInfo";
 import Racer from "$lib/_types/racer";
 import { currentRaceInfo } from "$lib/stores/raceInfos";
+import { get } from "svelte/store";
 
 export default function addRacers(){
     let info = new RaceInfo(RaceStatus.PRACTICE);
-    
-    currentRaceInfo.set(info)
     simulateLaps();
 }
 
 let oldRaceInfo :RaceInfo;
-currentRaceInfo.subscribe( x => oldRaceInfo = x);
 
 let time1 = 20;
 let time2 = 20;
@@ -23,6 +21,7 @@ async function simulateLaps(): Promise<void> {
       // Your asynchronous code goes here
       await new Promise((resolve) => setTimeout(resolve, 2000));
       console.log("Running every 2 seconds...");
+      oldRaceInfo = get(currentRaceInfo);
       if(oldRaceInfo.racers.length == 0){
         console.log("0 racer");
         continue;

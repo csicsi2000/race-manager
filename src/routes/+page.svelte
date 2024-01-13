@@ -19,7 +19,6 @@
     currentState = x;
   })
 
-  addRacers();
 </script>
 
 <div class="lg:max-w-screen-lg mx-auto">

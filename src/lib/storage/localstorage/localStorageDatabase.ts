@@ -1,13 +1,14 @@
 import { RaceStatus } from "$lib/_types/enums/raceStatus";
 import type { RaceInfoDatabase } from "$lib/_types/interfaces/raceInfoDatabase";
 import { RaceInfo } from "$lib/_types/raceInfo";
+import { error } from "@sveltejs/kit";
 
 const dataName = "RaceInfoDatabase";
 const config = "RaceInfoConfig";
 
 export class LocalStorageDatabase implements RaceInfoDatabase {
     storeRaceConfig(info: RaceInfo): boolean {
-        localStorage.setItem(config, JSON.stringify(config));
+        localStorage.setItem(config, JSON.stringify(info));
         return true;
     }
 
@@ -15,12 +16,14 @@ export class LocalStorageDatabase implements RaceInfoDatabase {
         try {
             let allData = localStorage.getItem(config);
             if (typeof allData === 'string') {
-                let formatted = JSON.parse(allData) as RaceInfo
+                let formatted = JSON.parse(allData) as RaceInfo;
+                console.log(formatted);
                 return formatted;
             }
+            throw new Error();
         }
-        finally {
-            console.log("Config set failed.");
+        catch {
+            console.log("Config get failed.");
             return new RaceInfo(RaceStatus.PRACTICE);
         }
     }
@@ -32,10 +35,11 @@ export class LocalStorageDatabase implements RaceInfoDatabase {
         try {
             localStorage.setItem(dataName, JSON.stringify(allInfos));
             document.dispatchEvent(this.event);
+            console.log("RaceHistory set.")
             return true
         }
         catch {
-            console.log("All Raceinfo set failed.")
+            console.log("All RaceHistory set failed.")
             return false;
         }
     }
@@ -47,8 +51,9 @@ export class LocalStorageDatabase implements RaceInfoDatabase {
                 let formatted = JSON.parse(allData) as RaceInfo[];
                 return formatted;
             }
+            throw new Error();
         }
-        finally {
+        catch {
             return [];
         }
     }

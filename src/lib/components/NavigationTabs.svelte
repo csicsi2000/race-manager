@@ -15,7 +15,7 @@
         <span slot="title">Settings</span>
         <div class="w-4/5 lg:max-w-screen-lg mx-auto">
       <p class="text-sm text-gray-500 dark:text-gray-400">
-        <RacersSettings></RacersSettings>
+        <RacersSettings />
       </p>
       </div>
     </TabItem>
