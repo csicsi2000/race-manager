@@ -27,7 +27,7 @@
   <Heading tag="h4">{raceInfo.raceName}</Heading>
   <div class="grid gap-6 mb-6 md:grid-cols-2">
     {#each raceInfo.racers as racer,index(index)}
-      <RacerData bind:racer={racer} manualScrollOnly={false}/>
+      <RacerData bind:racer={racer} manualScrollOnly={false} isStickyHeader/>
     {/each}
   </div>
   <Button on:click={newPracticeSession}>New Practice Session</Button>

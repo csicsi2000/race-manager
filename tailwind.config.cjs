@@ -17,7 +17,12 @@ const config = {
     require('flowbite-typography')
   ],
   safelist: [
-    {pattern: customColorSafelistPattern()}
+    {pattern: customColorSafelistPattern()},
+    {
+      pattern: /bg-[^/]+$/,
+      variants: [
+        'dark']
+    }
   ]
 };
 module.exports = config;

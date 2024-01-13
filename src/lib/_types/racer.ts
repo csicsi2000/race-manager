@@ -4,7 +4,7 @@ export default class Racer{
     name: string = "";
     startTime: number = -1;
     lapTimes: number[] = [];
-    color: string = "#00FFFFFF";
+    color: string = "gray";
     jumpStart: number = 0;
 
     constructor(raceId: number, name: string){

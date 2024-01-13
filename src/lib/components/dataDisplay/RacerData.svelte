@@ -15,10 +15,15 @@
 
   export let racer: Racer;
 export let manualScrollOnly: boolean;
+export let isStickyHeader: boolean = false;
 
   let tableChild: HTMLElement | undefined;
   let isAutoScrolling = true;
+  let headerClass = "";
 
+  if(isStickyHeader){
+    headerClass = "sticky";
+  }
 
   $: {
     if (racer.lapTimes.length > 0 && tableChild && !manualScrollOnly && isAutoScrolling) {
@@ -40,12 +45,12 @@ export let manualScrollOnly: boolean;
   >
   <caption
   bind:this={tableChild}
-  class="p-5 text-lg font-semibold text-left text-gray-900 bg-gray-200 dark:text-white dark:bg-gray-900 sticky top-[-1px]"
+  class="p-5 text-lg font-semibold text-left text-gray-900 bg-{racer.color}-200 dark:text-white dark:bg-{racer.color}-900 {headerClass} top-[-1px]"
   >
   {racer.name}
   <div class="grid gap-6 mb-6 grid-cols-2">
 
-      <p class="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
+      <p class="mt-1 text-sm font-normal text-gray-800 dark:text-gray-100">
         Best lap time: {getBestLapTime(racer)}
       </p>
       {#if !manualScrollOnly}
@@ -54,10 +59,10 @@ export let manualScrollOnly: boolean;
   </div>
     </caption>
 
-    <TableHead theadClass="sticky top-20 dark:bg-gray-900 bg-gray-200">
-      <TableHeadCell>Lap</TableHeadCell>
-      <TableHeadCell>Lap Time</TableHeadCell>
-      <TableHeadCell>Overall Tap Time</TableHeadCell>
+    <TableHead theadClass="text-gray-800 dark:text-gray-100 {headerClass} top-20 dark:bg-{racer.color}-900 bg-{racer.color}-200">
+      <TableHeadCell class="text-gray-800 dark:text-gray-100">Lap</TableHeadCell>
+      <TableHeadCell class="text-gray-800 dark:text-gray-100">Lap Time</TableHeadCell>
+      <TableHeadCell class="text-gray-800 dark:text-gray-100">Overall Tap Time</TableHeadCell>
     </TableHead>
     <TableBody tableBodyClass="divide-y-2 dark:divide-gray-500 divide-gray-400">
       {#each racer.lapTimes as times, index}

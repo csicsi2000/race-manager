@@ -66,7 +66,7 @@
 
           <tbody use:autoAnimate>
             {#each racers as racer, index (racer.name)}
-            <tr class="dark:bg-gray-900 bg-gray-300 border-b dark:border-gray-700">
+            <tr class="dark:bg-{racer.color}-900 bg-gray-300 border-b dark:border-gray-700">
               <td class="min-h-3 min-v-3 px-1">  
                 <img src={base + "/img/penalty.png"} class="max-w-10" alt="penalty symbol">
               </td>

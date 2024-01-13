@@ -28,7 +28,8 @@ export function newRaceSession(){
     generateNewSession(prepareRace);
 }
 
-function generateNewSession(raceInfo: RaceInfo):RaceInfo{
+function generateNewSession(oldRaceInfo: RaceInfo):RaceInfo{
+    let raceInfo = structuredClone(oldRaceInfo);
     raceInfo.startDate = new Date();
     raceInfo.raceStatus = RaceStatus.PRACTICE;
     raceInfo.racers.forEach(x => x.lapTimes = []);
