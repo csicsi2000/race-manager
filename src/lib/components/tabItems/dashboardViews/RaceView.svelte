@@ -20,7 +20,7 @@
   });
 
   function endRace(){
-    
+
   }
 
   function cancelRace() {
@@ -31,7 +31,7 @@
   let currentLap = 1;
 </script>
 
-<div class="grid gap-6 mb-6">
+<div class="grid gap-6">
   <div class="grid gap-6 mb-6 bg-gray-100 dark:bg-gray-700 rounded">
       <div>
         <div class="text-center">

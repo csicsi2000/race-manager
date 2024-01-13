@@ -57,7 +57,7 @@
   </NavUl>
 </Navbar>
 <div class="my-3">
-  <div class="flex items-center justify-center">
+  <div class="flex items-center justify-center my-4">
     {#if $connection == ConnectionStatus.DISCONNECTED}
       <Badge class="" rounded large color="red">Disconnected</Badge
       >{:else if ($connection = ConnectionStatus.CONNECTED)}

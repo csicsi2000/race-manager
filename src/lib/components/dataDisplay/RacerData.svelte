@@ -9,10 +9,6 @@
     TableBodyRow,
     TableHead,
     TableHeadCell,
-    Checkbox,
-    TableSearch,
-    Heading,
-    Button,
     Toggle
   } from "flowbite-svelte";
   import { onMount } from "svelte";
@@ -23,7 +19,6 @@ export let manualScrollOnly: boolean;
   let tableChild: HTMLElement | undefined;
   let isAutoScrolling = true;
 
-  let bestLapTime = 0;
 
   $: {
     if (racer.lapTimes.length > 0 && tableChild && !manualScrollOnly && isAutoScrolling) {
@@ -53,7 +48,9 @@ export let manualScrollOnly: boolean;
       <p class="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
         Best lap time: {getBestLapTime(racer)}
       </p>
+      {#if !manualScrollOnly}
       <Toggle bind:checked={isAutoScrolling}>Auto scroll</Toggle>
+      {/if}
   </div>
     </caption>
 
