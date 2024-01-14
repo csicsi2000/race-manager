@@ -19,7 +19,8 @@ const customAssets = [
 // `version` is the current version of the app
 
 const addDomain = (assets: string[]) =>
-    assets.map((f) => self.location.origin + f);
+    assets.map((f) => {
+        return f.startsWith("/static/") ? self.location.origin + f.slice(7) : self.location.origin + f});
 
 // we filter the files because we don't want to cache logos for iOS
 // (they're big and largely unused)
@@ -29,6 +30,7 @@ const ourAssets = addDomain([
     ...files.filter((f) => !/\/icons\/(apple.*?|original.png)/.test(f)),
     ...build,
     ...routes,
+    "/static/"
 ]);
 
 const toCache = [...ourAssets, ...customAssets];
