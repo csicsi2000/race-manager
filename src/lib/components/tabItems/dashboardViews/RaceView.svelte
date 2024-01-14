@@ -41,30 +41,7 @@
           <Heading tag="h5" class="mb-4">LAP {currentLap}/{$currentRaceInfo.lapCount}</Heading>
         </div>
 
-        <Table striped={true}>
-          <!--
-          <TableHead>
-            <TableHeadCell>No.</TableHeadCell>
-            <TableHeadCell>Name</TableHeadCell>
-            <TableHeadCell>Time</TableHeadCell>
-          </TableHead>
-          <TableBody tableBodyClass="divide-y">
-            {#each racers as racer, index}
-
-              <TableBodyRow>
-                <TableBodyCell>{index + 1}</TableBodyCell>
-                <TableBodyCell>{racer.name}</TableBodyCell>
-                {#if index == 0}
-                <TableBodyCell>Interval</TableBodyCell>
-
-                {:else}
-                  <TableBodyCell>+{racer.getMillisBehind(racers[index-1])}</TableBodyCell
-                  >
-                {/if}
-              </TableBodyRow>
-            {/each}
-          </TableBody>
-          -->
+        <Table striped={true} divClass="tabular-nums">
 
           <tbody use:autoAnimate>
             {#each racers as racer, index (racer.name)}

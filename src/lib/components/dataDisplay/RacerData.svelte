@@ -43,7 +43,7 @@ export let isStickyHeader: boolean = false;
   <Table
     shadow
     striped={true}
-    divClass="dark:bg-gray-600 max-h-[70svh] h-[70svh] overflow-y-auto scroll-auto scroll-smooth no-scrollbar"
+    divClass="tabular-nums dark:bg-gray-600 max-h-[70svh] h-[70svh] overflow-y-auto scroll-auto scroll-smooth no-scrollbar"
   >
   <caption
   bind:this={tableChild}
@@ -63,13 +63,13 @@ export let isStickyHeader: boolean = false;
 
     <TableHead theadClass="text-gray-800 dark:text-gray-100 {headerClass} top-20 dark:bg-{racer.color}-600 bg-{racer.color}-300">
       <TableHeadCell class="text-gray-800 dark:text-gray-100">Lap</TableHeadCell>
-      <TableHeadCell class="text-gray-800 dark:text-gray-100">Lap Time</TableHeadCell>
-      <TableHeadCell class="text-gray-800 dark:text-gray-100">Overall Tap Time</TableHeadCell>
+      <TableHeadCell class="text-gray-800 dark:text-gray-100 text-right">Lap Time</TableHeadCell>
+      <TableHeadCell class="text-gray-800 dark:text-gray-100 text-right">Overall Tap Time</TableHeadCell>
     </TableHead>
     <TableBody tableBodyClass="divide-y-2 dark:divide-gray-500 divide-gray-400">
       {#each racer.lapTimes as times, index}
         <TableBodyRow>
-          <TableBodyCell>{index + 1}</TableBodyCell>
+          <TableBodyCell >{index + 1}</TableBodyCell>
           {#if index == 0}
             <TableBodyCell class="text-right">{formatMs(times - racer.startMillis)}</TableBodyCell>
           {:else}
