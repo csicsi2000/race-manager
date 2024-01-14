@@ -1,4 +1,5 @@
 import { RaceStatus } from "$lib/_types/enums/raceStatus";
+import type { IRaceInfo } from "$lib/_types/interfaces/IRaceInfo";
 import type { RaceInfoDatabase } from "$lib/_types/interfaces/raceInfoDatabase";
 import { RaceInfo } from "$lib/_types/raceInfo";
 import { error } from "@sveltejs/kit";
@@ -7,12 +8,12 @@ const dataName = "RaceInfoDatabase";
 const config = "RaceInfoConfig";
 
 export class LocalStorageDatabase implements RaceInfoDatabase {
-    storeRaceConfig(info: RaceInfo): boolean {
+    storeRaceConfig(info: IRaceInfo): boolean {
         localStorage.setItem(config, JSON.stringify(info));
         return true;
     }
 
-    getRaceConfig(): RaceInfo {
+    getRaceConfig(): IRaceInfo {
         try {
             let allData = localStorage.getItem(config);
             if (typeof allData === 'string') {
@@ -31,7 +32,7 @@ export class LocalStorageDatabase implements RaceInfoDatabase {
     readonly eventName = "raceHistoryChanged";
     private event = new Event(this.eventName);
 
-    setAllRaceInfos(allInfos: RaceInfo[]): boolean {
+    setAllRaceInfos(allInfos: IRaceInfo[]): boolean {
         try {
             localStorage.setItem(dataName, JSON.stringify(allInfos));
             document.dispatchEvent(this.event);
@@ -44,7 +45,7 @@ export class LocalStorageDatabase implements RaceInfoDatabase {
         }
     }
 
-    getRaceInfos(): RaceInfo[] {
+    getRaceInfos(): IRaceInfo[] {
         try {
             let allData = localStorage.getItem(dataName);
             if (typeof allData === 'string') {
@@ -58,7 +59,7 @@ export class LocalStorageDatabase implements RaceInfoDatabase {
         }
     }
 
-    putRaceInfo(raceInfo: RaceInfo): boolean {
+    putRaceInfo(raceInfo: IRaceInfo): boolean {
         try {
             let allInfos = this.getRaceInfos();
             let existingItem = allInfos.find(x => x.id == raceInfo.id);

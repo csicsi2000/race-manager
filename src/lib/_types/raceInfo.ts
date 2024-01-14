@@ -1,7 +1,8 @@
 import { RaceStatus } from "./enums/raceStatus";
 import Racer from "./racer";
-
-export class RaceInfo{
+import { type IRaceInfo } from "./interfaces/IRaceInfo";
+import type { IRacer } from "./interfaces/IRacer";
+export class RaceInfo implements IRaceInfo{
     id: string;
     raceName: string;
     raceStatus: RaceStatus;
@@ -9,7 +10,7 @@ export class RaceInfo{
     startMillis: number = -1;
     countdownEndMillis: number = -1;
     lapCount: number = 10;
-    racers: Racer[] = [];
+    racers: IRacer[] = [];
 
     constructor(raceStatus: RaceStatus){
         this.id = Date.now().toString(36) + Math.random().toString(36).substr(2);

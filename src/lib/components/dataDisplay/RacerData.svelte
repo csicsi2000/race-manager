@@ -1,5 +1,7 @@
 <script lang="ts">
+  import { type IRacer } from "$lib/_types/interfaces/IRacer";
   import type Racer from "$lib/_types/racer";
+  import { formatMs } from "$lib/utils/converters";
   import { getBestLapTime } from "$lib/utils/racerHelpers";
   import { scrollToBottom } from "$lib/utils/scrolling";
   import {
@@ -13,7 +15,7 @@
   } from "flowbite-svelte";
   import { onMount } from "svelte";
 
-  export let racer: Racer;
+export let racer: IRacer;
 export let manualScrollOnly: boolean;
 export let isStickyHeader: boolean = false;
 
@@ -45,13 +47,13 @@ export let isStickyHeader: boolean = false;
   >
   <caption
   bind:this={tableChild}
-  class="p-5 text-lg font-semibold text-left text-gray-900 bg-{racer.color}-200 dark:text-white dark:bg-{racer.color}-900 {headerClass} top-[-1px]"
+  class="p-5 text-lg font-semibold text-left text-gray-900 bg-{racer.color}-400 dark:text-white dark:bg-{racer.color}-700 {headerClass} top-[-1px]"
   >
   {racer.name}
   <div class="grid gap-6 mb-6 grid-cols-2">
 
       <p class="mt-1 text-sm font-normal text-gray-800 dark:text-gray-100">
-        Best lap time: {getBestLapTime(racer)}
+        Best lap time: {formatMs(getBestLapTime(racer))}
       </p>
       {#if !manualScrollOnly}
       <Toggle bind:checked={isAutoScrolling}>Auto scroll</Toggle>
@@ -59,7 +61,7 @@ export let isStickyHeader: boolean = false;
   </div>
     </caption>
 
-    <TableHead theadClass="text-gray-800 dark:text-gray-100 {headerClass} top-20 dark:bg-{racer.color}-900 bg-{racer.color}-200">
+    <TableHead theadClass="text-gray-800 dark:text-gray-100 {headerClass} top-20 dark:bg-{racer.color}-600 bg-{racer.color}-300">
       <TableHeadCell class="text-gray-800 dark:text-gray-100">Lap</TableHeadCell>
       <TableHeadCell class="text-gray-800 dark:text-gray-100">Lap Time</TableHeadCell>
       <TableHeadCell class="text-gray-800 dark:text-gray-100">Overall Tap Time</TableHeadCell>
@@ -69,11 +71,11 @@ export let isStickyHeader: boolean = false;
         <TableBodyRow>
           <TableBodyCell>{index + 1}</TableBodyCell>
           {#if index == 0}
-            <TableBodyCell>{times - racer.startTime}</TableBodyCell>
+            <TableBodyCell class="text-right">{formatMs(times - racer.startMillis)}</TableBodyCell>
           {:else}
-            <TableBodyCell>{times - racer.lapTimes[index - 1]}</TableBodyCell>
+            <TableBodyCell class="text-right">{formatMs(times - racer.lapTimes[index - 1])}</TableBodyCell>
           {/if}
-          <TableBodyCell>{times}</TableBodyCell>
+          <TableBodyCell class="text-right">{formatMs(times)}</TableBodyCell>
         </TableBodyRow>
       {/each}
     </TableBody>

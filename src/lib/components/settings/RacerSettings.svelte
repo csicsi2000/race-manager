@@ -3,9 +3,9 @@
   import { Input, Label, Card, Heading, Select, Button } from "flowbite-svelte";
   import colors from "tailwindcss/colors";
   import { onMount } from "svelte";
+  import { type IRacer } from "$lib/_types/interfaces/IRacer";
 
-  export let racer: Racer;
-
+  export let racer: IRacer;
 
   let selectedColor: string = racer.color;
   $: {
@@ -31,7 +31,7 @@
   }
 </script>
 
-<Card class="grid gap-4 mb-6 bg-{racer.color}-300 dark:bg-{racer.color}-800">
+<Card class="grid gap-4 mb-6 bg-{racer.color}-400 dark:bg-{racer.color}-600">
   <Heading tag="h3" class="mb-4">{racer.name}</Heading>
   <div>
     <Label for="slot_1_name" class="mb-2">Name</Label>

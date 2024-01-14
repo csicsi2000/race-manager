@@ -1,6 +1,5 @@
 <script lang="ts">
   import { RaceStatus } from "$lib/_types/enums/raceStatus";
-  import { RaceInfo } from "$lib/_types/raceInfo";
   import {
     Table,
     TableBody,
@@ -14,14 +13,15 @@
   import { slide } from "svelte/transition";
   import RacerData from "$lib/components/dataDisplay/RacerData.svelte";
   import RaceStatistics from "$lib/components/dataDisplay/RaceStatistics.svelte";
+  import { type IRaceInfo } from "$lib/_types/interfaces/IRaceInfo";
 
-  export let raceHistory: RaceInfo[];
+  export let raceHistory: IRaceInfo[];
 
   let openRow: number | null;
-  let details: RaceInfo;
+  let details: IRaceInfo;
   let modalOpen = false;
 
-  function openModal(selectedInfo:RaceInfo){
+  function openModal(selectedInfo:IRaceInfo){
     details = selectedInfo;
     modalOpen = true;
   }

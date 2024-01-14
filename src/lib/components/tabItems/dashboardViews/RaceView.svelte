@@ -11,8 +11,9 @@
   import autoAnimate from "@formkit/auto-animate"
   import { getMillisBehind } from "$lib/utils/racerHelpers";
   import { newPracticeSession } from "$lib/utils/raceInfoSession";
+  import { type IRacer } from "$lib/_types/interfaces/IRacer";
 
-  let racers: Racer[] = [];
+  let racers: IRacer[] = [];
   currentRaceInfo.subscribe((x) => {
     racers = x.racers;
     racers = racers.sort(Racer.racerCompare);

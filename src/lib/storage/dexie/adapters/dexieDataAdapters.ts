@@ -3,6 +3,7 @@ import { RaceStatus } from "$lib/_types/enums/raceStatus";
 import { RaceInfo } from "$lib/_types/raceInfo";
 import type Dexie from "dexie";
 import { DbRacer } from "../adapterData/dbRacer";
+import type { IRaceInfo } from "$lib/_types/interfaces/IRaceInfo";
 
 const delimeter = ";";
 
@@ -13,7 +14,7 @@ export class DexiaDataAdapters{
         this.db = db;
     }
 
-    saveRaceInfo(raceInfo : RaceInfo){
+    saveRaceInfo(raceInfo : IRaceInfo){
         let dbRaceInfo = new DbRaceInfo();
 
         this.db.table("racers").where("raceId").equals(raceInfo.id).delete();
@@ -48,7 +49,7 @@ export class DexiaDataAdapters{
         return raceInfo;
     }
 */
-    dbToRaceInfo(dbRaceInfo: DbRaceInfo):RaceInfo{
+    dbToRaceInfo(dbRaceInfo: DbRaceInfo):IRaceInfo{
         let raceInfo = new RaceInfo(RaceStatus[dbRaceInfo.raceStatus as keyof typeof RaceStatus]);
         raceInfo.id = dbRaceInfo.id;
         raceInfo.countdownEndMillis = dbRaceInfo.countdownMillis;

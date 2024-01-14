@@ -1,13 +1,13 @@
-import type { RaceInfo } from "../raceInfo";
+import type { IRaceInfo } from "./IRaceInfo";
 
 export interface RaceInfoDatabase{
-    setAllRaceInfos(allInfos:RaceInfo[]):boolean;
-    getRaceInfos():RaceInfo[];
-    putRaceInfo(raceInfo:RaceInfo):boolean;
+    setAllRaceInfos(allInfos:IRaceInfo[]):boolean;
+    getRaceInfos():IRaceInfo[];
+    putRaceInfo(raceInfo:IRaceInfo):boolean;
     deleteRaceInfo(id:string):boolean;
 
-    storeRaceConfig(info: RaceInfo):boolean;
-    getRaceConfig():RaceInfo;
+    storeRaceConfig(info: IRaceInfo):boolean;
+    getRaceConfig():IRaceInfo;
 
     readonly eventName: string;
 }

@@ -9,14 +9,15 @@ import { RaceStatus } from "$lib/_types/enums/raceStatus";
 import { raceHistory } from "$lib/stores/raceHistory";
 import { get } from "svelte/store";
 import addRacers from "$lib/utils/addTestData";
-import { onNavigate } from '$app/navigation';
+import type { IRaceInfo } from "$lib/_types/interfaces/IRaceInfo";
 
 if (!building && browser && get(isFirstRun)) {
     isFirstRun.set(false);
 	let database = new LocalStorageDatabase();
-    let previousRaceConfig:RaceInfo 
+    let previousRaceConfig:IRaceInfo ;
     try{
         previousRaceConfig = database.getRaceConfig();
+
         console.log("Config from localstorage");
     }
     catch{
@@ -25,10 +26,11 @@ if (!building && browser && get(isFirstRun)) {
     console.log("Init run");
     console.log(previousRaceConfig)
     currentRaceInfo.set(previousRaceConfig);
-    newRaceInfo.set(previousRaceConfig);
+    newRaceInfo.set(structuredClone(previousRaceConfig));
     raceHistory.set(database.getRaceInfos());
 
     raceHistory.subscribe(x => database.setAllRaceInfos(x));
+    console.log("Racehistories: " + get(raceHistory).length)
     addRacers();
 }
 

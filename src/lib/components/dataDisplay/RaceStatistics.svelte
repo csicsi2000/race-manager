@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { RaceInfo } from "$lib/_types/raceInfo";
+  import { type IRaceInfo } from "$lib/_types/interfaces/IRaceInfo";
     import {Modal, ImagePlaceholder} from "flowbite-svelte";
 
-    export let raceInfo: RaceInfo;
+    export let raceInfo: IRaceInfo;
     export let state: boolean;
     $:{
         console.log(state);

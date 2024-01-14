@@ -1,5 +1,4 @@
-import { RaceInfo } from '$lib/_types/raceInfo';
-import { LocalStorageDatabase } from '$lib/storage/localstorage/localStorageDatabase';
+import type { IRaceInfo } from '$lib/_types/interfaces/IRaceInfo';
 import { writable } from 'svelte/store';
 
-export const raceHistory = writable<RaceInfo[]>([]);
+export const raceHistory = writable<IRaceInfo[]>([]);

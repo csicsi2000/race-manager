@@ -1,15 +1,14 @@
 <script lang="ts">
   import { RaceStatus } from "$lib/_types/enums/raceStatus";
-  import Racer from "$lib/_types/racer";
   import { currentRaceInfo, newRaceInfo, sessionStatus } from "$lib/stores/raceInfos";
   import {
     Button, Heading
   } from "flowbite-svelte";
   import RacerData from "$lib/components/dataDisplay/RacerData.svelte";
   import { newPracticeSession } from "$lib/utils/raceInfoSession";
-  import type { RaceInfo } from "$lib/_types/raceInfo";
+  import { type IRaceInfo } from "$lib/_types/interfaces/IRaceInfo";
 
-  let raceInfo: RaceInfo;
+  let raceInfo: IRaceInfo;
   currentRaceInfo.subscribe((x) => {
     raceInfo= x;
     console.log(x)
@@ -30,6 +29,6 @@
       <RacerData bind:racer={racer} manualScrollOnly={false} isStickyHeader/>
     {/each}
   </div>
-  <Button on:click={newPracticeSession}>New Practice Session</Button>
-  <Button on:click={startFormation}>Start Race</Button>
+  <Button color="blue" on:click={newPracticeSession}>New Practice Session</Button>
+  <Button color="green" on:click={startFormation}>Start Race</Button>
 </div>

@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { RaceInfo } from "$lib/_types/raceInfo";
   import { raceHistory } from "$lib/stores/raceHistory";
   import RaceHistory from "$lib/components/dataDisplay/RaceHistory.svelte";
+  import { type IRaceInfo } from "$lib/_types/interfaces/IRaceInfo";
 
 
-  let raceInfos: RaceInfo[];
+  let raceInfos: IRaceInfo[];
 raceHistory.subscribe( x => raceInfos = x);
 </script>
 

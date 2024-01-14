@@ -5,6 +5,7 @@ import { raceHistory } from "$lib/stores/raceHistory";
 import { currentRaceInfo, newRaceInfo } from "$lib/stores/raceInfos";
 import {get} from 'svelte/store';
 import { getUniqueName } from "./uniqueNameGenerator";
+import type { IRaceInfo } from "$lib/_types/interfaces/IRaceInfo";
 
 
 export function newPracticeSession(){
@@ -28,7 +29,7 @@ export function newRaceSession(){
     generateNewSession(prepareRace);
 }
 
-function generateNewSession(oldRaceInfo: RaceInfo):RaceInfo{
+function generateNewSession(oldRaceInfo: IRaceInfo):IRaceInfo{
     let raceInfo = structuredClone(oldRaceInfo);
     raceInfo.startDate = new Date();
     raceInfo.raceStatus = RaceStatus.PRACTICE;
@@ -39,7 +40,7 @@ function generateNewSession(oldRaceInfo: RaceInfo):RaceInfo{
     return raceInfo;
 }
 
-function savePreviousSession(raceInfo: RaceInfo){
+function savePreviousSession(raceInfo: IRaceInfo){
     let history = get(raceHistory);
     history.push(raceInfo);
     raceHistory.set(history);

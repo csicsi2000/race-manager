@@ -2,7 +2,7 @@
 export default class Racer{
     raceId: number = -1;
     name: string = "";
-    startTime: number = -1;
+    startMillis: number = -1;
     lapTimes: number[] = [];
     color: string = "gray";
     jumpStart: number = 0;
