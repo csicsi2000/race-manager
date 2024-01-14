@@ -47,7 +47,7 @@ export let isStickyHeader: boolean = false;
   >
   <caption
   bind:this={tableChild}
-  class="p-5 text-lg font-semibold text-left text-gray-900 bg-{racer.color}-400 dark:text-white dark:bg-{racer.color}-700 {headerClass} top-[-1px]"
+  class="p-5 text-lg font-semibold text-left text-gray-900 bg-{racer.color}-300 dark:text-white dark:bg-{racer.color}-700 {headerClass} top-[-1px]"
   >
   {racer.name}
   <div class="grid gap-6 mb-6 grid-cols-2">

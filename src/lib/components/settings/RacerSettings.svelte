@@ -16,7 +16,8 @@
   let colorValues: string[] = [];
 
   onMount(() => {
-    let ignoredColors = ["inherit", "current", "transparent", "black", "white"];
+    console.log(Object.keys(colors));
+    let ignoredColors = ["inherit", "current", "transparent", "black", "white","LightBlue","warmGray","trueGray","coolGray","blueGray"];
     Object.keys(colors).forEach((key) => {
       if (ignoredColors.includes(key)) {
         return;
@@ -31,7 +32,7 @@
   }
 </script>
 
-<Card class="grid gap-4 mb-6 bg-{racer.color}-400 dark:bg-{racer.color}-600">
+<Card class="grid gap-4 mb-6 bg-{racer.color}-300 dark:bg-{racer.color}-600">
   <Heading tag="h3" class="mb-4">{racer.name}</Heading>
   <div>
     <Label for="slot_1_name" class="mb-2">Name</Label>
