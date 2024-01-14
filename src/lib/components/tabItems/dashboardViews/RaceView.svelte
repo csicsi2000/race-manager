@@ -12,6 +12,7 @@
   import { getMillisBehind } from "$lib/utils/racerHelpers";
   import { newPracticeSession } from "$lib/utils/raceInfoSession";
   import { type IRacer } from "$lib/_types/interfaces/IRacer";
+  import { formatMs } from "$lib/utils/converters";
 
   let racers: IRacer[] = [];
   currentRaceInfo.subscribe((x) => {
@@ -78,12 +79,12 @@
                 {racer.name}
               </td>
               {#if index == 0}
-              <td class="px-5 py-4 text-gray-800 dark:text-white text-xl">
+              <td class="px-5 py-4 text-gray-800 dark:text-white text-xl text-right">
                 Interval
             </td>
               {:else}
-              <td class="px-5 py-4 text-gray-800 dark:text-white text-xl">
-                +{getMillisBehind(racer,racers[index-1])}
+              <td class="px-5 py-4 text-gray-800 dark:text-white text-xl text-right">
+                +{formatMs(getMillisBehind(racer,racers[index-1]))}
             </td>
                 {/if}
           </tr>
