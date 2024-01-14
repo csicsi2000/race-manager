@@ -1,6 +1,6 @@
 export function formatMs(ms: number) {
-  if(ms < 0){
-    return ""
+  if(!ms){
+    return "Error"
   }
   let textMillis = String(ms);
   let remainingMillis = textMillis.substring(textMillis.length-3);
@@ -12,3 +12,12 @@ export function formatMs(ms: number) {
       (minutes == 0 ? "" : minutes + ":") + (seconds < 10 && minutes !=0 ? "0" : "")+ seconds +"."+ remainingMillis
     );
   }
+
+export function formatDate(date: Date):string{
+  if(typeof(date) == "string"){
+    date = new Date(date);
+  }
+  let formattedDate = date.toLocaleString("hu-HU")
+  console.log(formattedDate);
+  return formattedDate;
+}

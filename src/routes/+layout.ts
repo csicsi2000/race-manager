@@ -3,7 +3,7 @@ export const prerender = true;
 import type {LayoutLoad} from "../../.svelte-kit/types/src/routes/$types";
 import { browser, building } from '$app/environment';
 import { LocalStorageDatabase } from "$lib/storage/localstorage/localStorageDatabase";
-import { currentRaceInfo, isFirstRun, newRaceInfo } from "$lib/stores/raceInfos";
+import { currentPractice, isFirstRun, newRaceInfo } from "$lib/stores/raceInfos";
 import { RaceInfo } from "$lib/_types/raceInfo";
 import { RaceStatus } from "$lib/_types/enums/raceStatus";
 import { raceHistory } from "$lib/stores/raceHistory";
@@ -25,7 +25,7 @@ if (!building && browser && get(isFirstRun)) {
     }
     console.log("Init run");
     console.log(previousRaceConfig)
-    currentRaceInfo.set(previousRaceConfig);
+    currentPractice.set(previousRaceConfig);
     newRaceInfo.set(structuredClone(previousRaceConfig));
     raceHistory.set(database.getRaceInfos());
 

@@ -14,6 +14,7 @@
   import RacerData from "$lib/components/dataDisplay/RacerData.svelte";
   import RaceStatistics from "$lib/components/dataDisplay/RaceStatistics.svelte";
   import { type IRaceInfo } from "$lib/_types/interfaces/IRaceInfo";
+  import { formatDate } from "$lib/utils/converters";
 
   export let raceHistory: IRaceInfo[];
 
@@ -51,7 +52,7 @@
       {#each raceHistory as race, i}
         <TableBodyRow on:click={() => toggleRow(i)}>
           <TableBodyCell>{race.raceName}</TableBodyCell>
-          <TableBodyCell>{race.startDate.toLocaleString("hu-HU")}</TableBodyCell
+          <TableBodyCell>{formatDate(race.startDate)}</TableBodyCell
           >
           <TableBodyCell>{RaceStatus[race.raceStatus]}</TableBodyCell>
         </TableBodyRow>

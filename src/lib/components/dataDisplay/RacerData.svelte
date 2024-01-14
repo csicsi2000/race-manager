@@ -22,6 +22,8 @@ export let isStickyHeader: boolean = false;
   let tableChild: HTMLElement | undefined;
   let isAutoScrolling = true;
   let headerClass = "";
+  let bestLapTime = "Not set";
+
 
   if(isStickyHeader){
     headerClass = "sticky";
@@ -29,6 +31,7 @@ export let isStickyHeader: boolean = false;
 
   $: {
     if (racer.lapTimes.length > 0 && tableChild && !manualScrollOnly && isAutoScrolling) {
+      bestLapTime = formatMs(getBestLapTime(racer));
       let tableNode = tableChild.parentNode?.parentNode;
       setTimeout(() => {
         if (tableNode instanceof HTMLElement  && isAutoScrolling) {
@@ -53,7 +56,7 @@ export let isStickyHeader: boolean = false;
   <div class="grid gap-6 mb-6 grid-cols-2">
 
       <p class="mt-1 text-sm font-normal text-gray-800 dark:text-gray-100">
-        Best lap time: {formatMs(getBestLapTime(racer))}
+        Best lap time: {bestLapTime}
       </p>
       {#if !manualScrollOnly}
       <Toggle bind:checked={isAutoScrolling}>Auto scroll</Toggle>

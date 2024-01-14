@@ -29,7 +29,7 @@
 });
 </script>
 
-<Navbar class="z-10 bg-gray-200" let:toggle>
+<Navbar class="z-10 bg-gray-300" let:toggle>
   <NavBrand>
     <DarkMode />
     <span
@@ -42,8 +42,12 @@
   <NavUl >
     <NavLi
     href="{base}/"
-    active={$page.url.pathname.endsWith("/")}>Home</NavLi
+    active={$page.url.pathname.endsWith("/")}>Practice</NavLi
   >
+  <NavLi
+  href="{base}/race"
+  active={$page.url.pathname.endsWith("/race")}>Race</NavLi
+>
     <NavLi
       href="{base}/raceHistory"
       active={$page.url.pathname.endsWith("raceHistory")}>Race History</NavLi

@@ -8,7 +8,8 @@
   import { sessionStatus, newRaceInfo } from "$lib/stores/raceInfos";
   import { RaceStatus } from "$lib/_types/enums/raceStatus";
   import { formatMs } from "$lib/utils/converters";
-  import { newRaceSession } from "$lib/utils/raceInfoSession";
+  import { cancelRace, newRaceSession } from "$lib/utils/raceInfoSession";
+  import { PageRoutes } from "$lib/_types/enums/pageRoutes";
 
   const LIGHT_ON_INTERVAL = 1000;
 
@@ -44,10 +45,10 @@ sessionStatus.subscribe(x => {
     }
   }
 
-  function cancelRace(){
+  function cancelRaceLights(){
     clearLights();
-    sessionStatus.set(RaceStatus.PRACTICE);
     modalState =false;
+    cancelRace();
   }
 
   //#region Start race
@@ -167,14 +168,14 @@ sessionStatus.subscribe(x => {
   <div>Your best: {formatMs(best)}</div>
   <div class="grid gap-6 mb-6 md:grid-cols-2">
 {#if raceStatus == RaceStatus.FORMATION}
-  <Button color="green" pill on:click={clickStartRace}>Start Race</Button>
+  <Button color="green" pill on:click={clickStartRace}>Start Countdown</Button>
   {:else if state == LightStates.RUNNING}
   <Button color="yellow" pill on:click={pauseCountDown} >Reset</Button>
   {:else}
   <Button color="yellow" pill on:click={pauseCountDown} disabled>Disabled</Button>
 
 {/if}
-  <Button color="alternative" pill on:click={cancelRace}>Cancel race</Button>
+  <Button color="alternative" pill on:click={cancelRaceLights}>Cancel race</Button>
 </div>
 </div>
 </Modal>
