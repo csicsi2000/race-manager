@@ -64,7 +64,7 @@ export let isStickyHeader: boolean = false;
     <TableHead theadClass="text-gray-800 dark:text-gray-100 {headerClass} top-20 dark:bg-{racer.color}-600 bg-{racer.color}-300">
       <TableHeadCell class="text-gray-800 dark:text-gray-100">Lap</TableHeadCell>
       <TableHeadCell class="text-gray-800 dark:text-gray-100 text-right">Lap Time</TableHeadCell>
-      <TableHeadCell class="text-gray-800 dark:text-gray-100 text-right">Overall Tap Time</TableHeadCell>
+      <TableHeadCell class="text-gray-800 dark:text-gray-100 text-right">Overall Time</TableHeadCell>
     </TableHead>
     <TableBody tableBodyClass="divide-y-2 dark:divide-gray-500 divide-gray-400">
       {#each racer.lapTimes as times, index}
