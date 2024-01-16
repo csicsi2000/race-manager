@@ -17,7 +17,6 @@ export function formatDate(date: Date):string{
   if(typeof(date) == "string"){
     date = new Date(date);
   }
-  let formattedDate = date.toLocaleString("hu-HU")
-  console.log(formattedDate);
+  let formattedDate = date.toLocaleString("hu-HU");
   return formattedDate;
 }

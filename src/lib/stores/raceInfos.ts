@@ -12,5 +12,3 @@ export const sessionStatus = writable(RaceStatus.PRACTICE);
 
 // Configured session. New sessions are created based on this
 export const newRaceInfo = writable<IRaceInfo>(new RaceInfo(RaceStatus.RACE));
-
-export const isFirstRun = writable(true);

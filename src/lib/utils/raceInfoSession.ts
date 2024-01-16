@@ -25,6 +25,7 @@ export function newPracticeSession(){
     let newPractice = structuredClone(get(newRaceInfo));
     savePreviousSession(get(currentPractice));
     newPractice.startDate = new Date();
+    newPractice.raceName = getUniqueName();
     currentPractice.set(newPractice);
 
     generateNewRaceInfo(newPractice);

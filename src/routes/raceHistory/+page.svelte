@@ -5,9 +5,8 @@
 
 
   let raceInfos: IRaceInfo[];
-raceHistory.subscribe( x => raceInfos = x);
 </script>
 
 <div class="lg:max-w-screen-lg mx-auto">
-    <RaceHistory bind:raceHistory={raceInfos}/>
+    <RaceHistory/>
 </div>

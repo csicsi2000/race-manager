@@ -46,7 +46,7 @@ export let isStickyHeader: boolean = false;
   <Table
     shadow
     striped={true}
-    divClass="tabular-nums dark:bg-gray-600 max-h-[70svh] h-[70svh] overflow-y-auto scroll-auto scroll-smooth no-scrollbar"
+    divClass="tabular-nums dark:bg-gray-600 max-h-[70svh] h-[70svh] overflow-y-auto scroll-auto scroll-smooth no-scrollbar drop-shadow-2xl "
   >
   <caption
   bind:this={tableChild}

@@ -2,7 +2,7 @@
   import { RaceStatus } from "$lib/_types/enums/raceStatus";
   import { currentPractice, newRaceInfo, sessionStatus } from "$lib/stores/raceInfos";
   import {
-    Button, Heading
+    Button, Heading, Label, Input
   } from "flowbite-svelte";
   import RacerData from "$lib/components/dataDisplay/RacerData.svelte";
   import { newPracticeSession, startFormation } from "$lib/utils/raceInfoSession";
@@ -17,7 +17,10 @@
 </script>
 
 <div class="grid gap-6 mb-6">
-  <Heading tag="h4">{raceInfo.raceName}</Heading>
+  <div class="text-center">
+  <Heading tag="h3">{raceInfo.raceName} </Heading>
+
+</div>
   <div class="grid gap-6 mb-6 md:grid-cols-2">
     {#each raceInfo.racers as racer,index(index)}
       <RacerData bind:racer={racer} manualScrollOnly={false} isStickyHeader/>
