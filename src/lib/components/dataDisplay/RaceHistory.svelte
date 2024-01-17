@@ -14,7 +14,7 @@
   import RacerData from "$lib/components/dataDisplay/RacerData.svelte";
   import RaceStatistics from "$lib/components/dataDisplay/RaceStatistics.svelte";
   import { type IRaceInfo } from "$lib/_types/interfaces/IRaceInfo";
-  import { formatDate } from "$lib/utils/converters";
+  import { formatDate } from "$lib/utils/converters/timeConverter";
   import { raceHistory } from "$lib/stores/raceHistory";
 
   let currHistory: IRaceInfo[];
@@ -28,6 +28,9 @@
   function openModal(selectedInfo:IRaceInfo){
     details = selectedInfo;
     modalOpen = true;
+  }
+  $:{
+    console.log("Details changed");
   }
 
   const toggleRow = (i: number) => {

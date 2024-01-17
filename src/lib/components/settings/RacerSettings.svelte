@@ -16,7 +16,6 @@
   let colorValues: string[] = [];
 
   onMount(() => {
-    console.log(Object.keys(colors));
     let ignoredColors = ["inherit", "current", "transparent", "black", "white","LightBlue","warmGray","trueGray","coolGray","blueGray"];
     Object.keys(colors).forEach((key) => {
       if (ignoredColors.includes(key)) {

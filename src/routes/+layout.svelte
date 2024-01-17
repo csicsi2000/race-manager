@@ -18,6 +18,7 @@
   import { onNavigate } from "$app/navigation";
 
   onNavigate((navigation) => {
+
     if (!document.startViewTransition) return;
 
     return new Promise((resolve) => {
@@ -27,6 +28,7 @@
       });
     });
   });
+  connection.subscribe(() => console.warn("Connection state changed" + $connection + ";" + ConnectionStatus.CONNECTED));
 </script>
 
 <Navbar class="z-10 bg-gray-300" let:toggle>
@@ -62,7 +64,7 @@
   <div class="flex items-center justify-center my-4">
     {#if $connection == ConnectionStatus.DISCONNECTED}
       <Badge class="" rounded large color="red">Disconnected</Badge
-      >{:else if ($connection = ConnectionStatus.CONNECTED)}
+      >{:else if ($connection == ConnectionStatus.CONNECTED)}
       <Badge class="" rounded large color="green">Connected</Badge>
     {/if}
   </div>

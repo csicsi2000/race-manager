@@ -16,7 +16,7 @@
   } from "flowbite-svelte-icons";
   import  { type ApexOptions } from "apexcharts";
   import { onMount } from "svelte";
-  import { formatMs } from "$lib/utils/converters";
+  import { formatMs } from "$lib/utils/converters/timeConverter";
   import { type IRaceInfo } from "$lib/_types/interfaces/IRaceInfo";
   import type { RaceInfo } from "$lib/_types/raceInfo";
   import { RaceStatus } from "$lib/_types/enums/raceStatus";
@@ -38,7 +38,8 @@
 
     return hours + "." + minutes + "." + seconds + "." + milliseconds;
   }
-  onMount(() => {
+
+onMount(() => {
     let laps = raceInfo.lapCount;
     if(raceInfo.raceStatus == RaceStatus.PRACTICE){
         laps = Math.max(raceInfo.racers[0].lapTimes.length,raceInfo.racers[1].lapTimes.length)
@@ -65,23 +66,24 @@
     });
 });
 
-  let options: ApexOptions = {
+let options: ApexOptions = {
     chart: {
         id: "mainChart",
-      height: "400px",
-      width: "100%",
-      type: "line",
-      fontFamily: "Inter, sans-serif",
-      dropShadow: {
-        enabled: true,
-      },
-      toolbar: {
-        autoSelected: 'pan',
-        show: false,
-      },
+        height: "400px",
+        width: "100%",
+        type: "line",
+        fontFamily: "Inter, sans-serif",
+        dropShadow: {
+            enabled: false,
+        },
+        toolbar: {
+            //autoSelected: 'pan',
+            show: false,
+        },
     },
+    series: chartSeries,
     tooltip: {
-      enabled: true,
+      enabled: false,
       x: {
         show: false,
       },
@@ -102,7 +104,6 @@
         top: -26,
       },
     },
-    series: chartSeries,
     legend: {
       show: true,
     },
@@ -141,10 +142,45 @@
   };
 
 
-
+  var optionsLine: ApexOptions = {
+          series: chartSeries,
+          chart: {
+          id: 'chart1',
+          height: 130,
+          type: 'area',
+          brush:{
+            target: 'mainChart',
+            enabled: true
+          },
+          selection: {
+            enabled: true,
+            xaxis: {
+              min: 0,
+              max: lapCounts.length-1
+            }
+          },
+        },
+        colors: ['#008FFB'],
+        fill: {
+          type: 'gradient',
+          gradient: {
+            opacityFrom: 0.91,
+            opacityTo: 0.1,
+          }
+        },
+        xaxis: {
+          tooltip: {
+            enabled: false
+          }
+        },
+        yaxis: {
+          tickAmount: 2
+        }
+        };
 
 </script>
 
 <Card size="xl">
   <Chart {options} />
+  <Chart options={optionsLine}/>
 </Card>

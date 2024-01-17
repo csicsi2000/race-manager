@@ -12,7 +12,7 @@
   import { getMillisBehind } from "$lib/utils/racerHelpers";
   import { cancelRace, newPracticeSession } from "$lib/utils/raceInfoSession";
   import { type IRacer } from "$lib/_types/interfaces/IRacer";
-  import { formatMs } from "$lib/utils/converters";
+  import { formatMs } from "$lib/utils/converters/timeConverter";
   import { type IRaceInfo } from "$lib/_types/interfaces/IRaceInfo";
 
 

@@ -7,7 +7,7 @@
   import { base } from "$app/paths";
   import { sessionStatus, newRaceInfo } from "$lib/stores/raceInfos";
   import { RaceStatus } from "$lib/_types/enums/raceStatus";
-  import { formatMs } from "$lib/utils/converters";
+  import { formatMs } from "$lib/utils/converters/timeConverter";
   import { cancelRace, newRaceSession } from "$lib/utils/raceInfoSession";
   import { PageRoutes } from "$lib/_types/enums/pageRoutes";
 

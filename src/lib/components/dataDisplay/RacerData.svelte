@@ -1,9 +1,9 @@
 <script lang="ts">
   import { type IRacer } from "$lib/_types/interfaces/IRacer";
   import type Racer from "$lib/_types/racer";
-  import { formatMs } from "$lib/utils/converters";
+  import { formatMs } from "$lib/utils/converters/timeConverter";
   import { getBestLapTime } from "$lib/utils/racerHelpers";
-  import { scrollToBottom } from "$lib/utils/scrolling";
+  import { scrollToBottom } from "$lib/utils/helpers/scrolling";
   import {
     Table,
     TableBody,

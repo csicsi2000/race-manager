@@ -4,6 +4,7 @@ import type { PageLoad } from './$types';
 export const load = (async ({params,url}) => {
     let serverAddress = url.searchParams.get("server");
     console.log(serverAddress);
-    connectedIP.set(serverAddress);
+    if(serverAddress){
+    connectedIP.set(serverAddress);}
     return {};
 }) satisfies PageLoad;
