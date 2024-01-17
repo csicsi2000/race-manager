@@ -1,5 +1,5 @@
 export class SensorData{
-    Slot_1: string = "";
-    Slot_2: string = "";
-    Millis: number = -1;
+    slot_1: string = "";
+    slot_2: string = "";
+    millis: number = -1;
 }

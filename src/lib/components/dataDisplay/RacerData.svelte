@@ -1,9 +1,9 @@
 <script lang="ts">
   import { type IRacer } from "$lib/_types/interfaces/IRacer";
   import type Racer from "$lib/_types/racer";
-  import { formatMs } from "$lib/utils/converters";
+  import { formatMs } from "$lib/utils/converters/timeConverter";
   import { getBestLapTime } from "$lib/utils/racerHelpers";
-  import { scrollToBottom } from "$lib/utils/scrolling";
+  import { scrollToBottom } from "$lib/utils/helpers/scrolling";
   import {
     Table,
     TableBody,
@@ -22,6 +22,8 @@ export let isStickyHeader: boolean = false;
   let tableChild: HTMLElement | undefined;
   let isAutoScrolling = true;
   let headerClass = "";
+  let bestLapTime = "Not set";
+
 
   if(isStickyHeader){
     headerClass = "sticky";
@@ -29,6 +31,7 @@ export let isStickyHeader: boolean = false;
 
   $: {
     if (racer.lapTimes.length > 0 && tableChild && !manualScrollOnly && isAutoScrolling) {
+      bestLapTime = formatMs(getBestLapTime(racer));
       let tableNode = tableChild.parentNode?.parentNode;
       setTimeout(() => {
         if (tableNode instanceof HTMLElement  && isAutoScrolling) {
@@ -43,7 +46,7 @@ export let isStickyHeader: boolean = false;
   <Table
     shadow
     striped={true}
-    divClass="tabular-nums dark:bg-gray-600 max-h-[70svh] h-[70svh] overflow-y-auto scroll-auto scroll-smooth no-scrollbar"
+    divClass="tabular-nums dark:bg-gray-600 max-h-[70svh] h-[70svh] overflow-y-auto scroll-auto scroll-smooth no-scrollbar drop-shadow-2xl "
   >
   <caption
   bind:this={tableChild}
@@ -53,7 +56,7 @@ export let isStickyHeader: boolean = false;
   <div class="grid gap-6 mb-6 grid-cols-2">
 
       <p class="mt-1 text-sm font-normal text-gray-800 dark:text-gray-100">
-        Best lap time: {formatMs(getBestLapTime(racer))}
+        Best lap time: {bestLapTime}
       </p>
       {#if !manualScrollOnly}
       <Toggle bind:checked={isAutoScrolling}>Auto scroll</Toggle>
