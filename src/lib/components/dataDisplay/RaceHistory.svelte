@@ -14,8 +14,12 @@
   import RacerData from "$lib/components/dataDisplay/RacerData.svelte";
   import RaceStatistics from "$lib/components/dataDisplay/RaceStatistics.svelte";
   import { type IRaceInfo } from "$lib/_types/interfaces/IRaceInfo";
+  import { formatDate } from "$lib/utils/converters/timeConverter";
+  import { raceHistory } from "$lib/stores/raceHistory";
 
-  export let raceHistory: IRaceInfo[];
+  let currHistory: IRaceInfo[];
+  
+  raceHistory.subscribe( x => currHistory = x);
 
   let openRow: number | null;
   let details: IRaceInfo;
@@ -25,6 +29,9 @@
     details = selectedInfo;
     modalOpen = true;
   }
+  $:{
+    console.log("Details changed");
+  }
 
   const toggleRow = (i: number) => {
     openRow = openRow === i ? null : i;
@@ -32,27 +39,31 @@
 
   function deleteRaceInfo(index: number) {
     if (index > -1) {
-      raceHistory.splice(index, 1);
+      let newHistory = structuredClone(currHistory);
+      newHistory.splice(index, 1);
+      console.log(currHistory.length + " " + newHistory.length)
+      raceHistory.set(newHistory);
+      openRow = null;
     }
   }
 </script>
 
 <div>
-  <Table
+  <Table 
+   hoverable={true}
     shadow
-    divClass="dark:bg-gray-600 max-h-[70svh] h-[70svh] overflow-y-auto scroll-auto scroll-smooth no-scrollbar"
+    divClass="dark:bg-gray-600 max-h-[70svh] h-[70svh] overflow-y-auto scroll-auto scroll-smooth no-scrollbar drop-shadow-2xl"
   >
-    <TableHead theadClass="sticky top-0 dark:bg-gray-900 bg-gray-200">
+    <TableHead class="sticky top-0 bg-gray-300 dark:bg-gray-900">
       <TableHeadCell>Session</TableHeadCell>
       <TableHeadCell>Date</TableHeadCell>
       <TableHeadCell>Type</TableHeadCell>
     </TableHead>
-    <TableBody tableBodyClass="divide-y-2 dark:divide-gray-500 divide-gray-400">
-      {#each raceHistory as race, i}
+    <TableBody tableBodyClass="divide-y-2 dark:divide-gray-500 divide-gray-300">
+      {#each currHistory as race, i}
         <TableBodyRow on:click={() => toggleRow(i)}>
           <TableBodyCell>{race.raceName}</TableBodyCell>
-          <TableBodyCell>{race.startDate.toLocaleString("hu-HU")}</TableBodyCell
-          >
+          <TableBodyCell>{formatDate(race.startDate)}</TableBodyCell>
           <TableBodyCell>{RaceStatus[race.raceStatus]}</TableBodyCell>
         </TableBodyRow>
         {#if openRow === i}
@@ -84,5 +95,5 @@
       {/each}
     </TableBody>
   </Table>
-  <RaceStatistics bind:raceInfo={details} bind:state={modalOpen}/>
 </div>
+<RaceStatistics bind:raceInfo={details} bind:state={modalOpen}/>
