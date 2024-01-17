@@ -1,7 +1,8 @@
 import { goto } from '$app/navigation';
+import { base } from '$app/paths';
 import { PageRoutes } from '$lib/_types/enums/pageRoutes';
 
 export function routeToPage(route: PageRoutes, replaceState: boolean) {
     console.log(route)
-   goto(`${route}`, { replaceState }) 
+   goto(`${base}${route}`, { replaceState }) 
 }

@@ -15,7 +15,7 @@
     }
 </script>
 
-<div class="cursor-pointer" role="button" tabindex="0" on:click={copy} on:keydown={e => e.key === "Enter" && copy}>
+<div class="cursor-pointer bg-gray-200 dark:bg-gray-600 dark:text-gray-200 rounded" role="button" tabindex="0" on:click={copy} on:keydown={e => e.key === "Enter" && copy}>
     <slot>
         <ClipboardOutline size="md" class="text-primary-400 text-inherit"/>
     </slot>

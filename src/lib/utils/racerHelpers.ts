@@ -3,6 +3,7 @@ import type Racer from "$lib/_types/racer";
 
 export function getMillisBehind(backRacer: IRacer, frontRacer: IRacer):number{
     let currentLap = backRacer.lapTimes.length-1;
+    console.log(backRacer.lapTimes[currentLap] + " ; " + frontRacer.lapTimes[currentLap])
     return backRacer.lapTimes[currentLap] - frontRacer.lapTimes[currentLap];
 }
 

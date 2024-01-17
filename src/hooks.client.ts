@@ -9,6 +9,7 @@ import addRacers from "$lib/utils/addTestData";
 import type { IRaceInfo } from "$lib/_types/interfaces/IRaceInfo";
 import { sensorReadings } from '$lib/stores/serverStatus';
 import { WsServer } from '$lib/websocket/wsServer';
+import { getSavedSensorIp } from '$lib/utils/localSettings';
 
 
 let database = new LocalStorageDatabase();
@@ -39,5 +40,8 @@ sensorReadings.subscribe(x => {
 
     }
 })
+
+getSavedSensorIp();
+
 let ws = new WsServer();
 addRacers();

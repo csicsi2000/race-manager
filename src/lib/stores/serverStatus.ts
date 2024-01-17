@@ -5,7 +5,7 @@ import { writable } from 'svelte/store'
 
 export const connection = writable(ConnectionStatus.DISCONNECTED);
 
-export const connectedIP = writable<string>("");
+export const connectedSensorIP = writable<string>("");
 
 export const sensorReadings = writable(new SensorData());
 

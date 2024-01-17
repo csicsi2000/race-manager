@@ -23,16 +23,4 @@
 <div class="lg:max-w-screen-lg mx-auto">
   <PracticeView/>
 </div>
-<BottomNav position="fixed" navType="group" classInner="grid-cols-5">
-  <BottomNavHeader slot="header" style="pointer-events: none;">
-    {#each Object.keys(RaceStatus) as state}
-      {#if isNaN(Number(state))}
-        {#if state == RaceStatus[currentState]}
-          <BottomNavHeaderItem itemName={state} active disabled />
-        {:else}
-          <BottomNavHeaderItem itemName={state} disabled />
-        {/if}
-      {/if}
-    {/each}
-  </BottomNavHeader>
-</BottomNav>
+

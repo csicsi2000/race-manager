@@ -11,8 +11,6 @@ import { routeToPage } from "./navigationHelper";
 
 export function startFormation() {
     sessionStatus.set(RaceStatus.FORMATION);
-    routeToPage(PageRoutes.RACE,true);
-    console.log(PageRoutes.RACE)
 }
 
 export function cancelRace() {

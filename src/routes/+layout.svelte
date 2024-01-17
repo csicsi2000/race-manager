@@ -7,15 +7,20 @@
     NavHamburger,
     NavLi,
     NavUl,
-    Badge,
+    Badge, BottomNav, BottomNavHeader, BottomNavHeaderItem, BottomNavItem, Tooltip
+
+
   } from "flowbite-svelte";
   import { page } from "$app/stores";
   import { base } from "$app/paths";
-  import { GithubSolid } from "flowbite-svelte-icons";
+  import { AdjustmentsVerticalOutline, BookmarkSolid, GithubSolid, HomeSolid, PlusSolid, SearchOutline } from "flowbite-svelte-icons";
   import { connection } from "$lib/stores/serverStatus";
   import { ConnectionStatus } from "$lib/_types/enums/connectionStatus";
   import { fade } from "svelte/transition";
   import { onNavigate } from "$app/navigation";
+  import { RaceStatus } from "$lib/_types/enums/raceStatus";
+  import { sessionStatus } from "$lib/stores/raceInfos";
+  import SpeedDial from "$lib/components/navigation/SpeedDial.svelte";
 
   onNavigate((navigation) => {
 
@@ -52,9 +57,12 @@
       href="{base}/raceHistory"
       active={$page.url.pathname.endsWith("raceHistory")}>History</NavLi
     >
-    <NavLi href="{base}/credits" active={$page.url.pathname.endsWith("credits")}
-      >Credits</NavLi
+    <NavLi href="{base}/tutorial" active={$page.url.pathname.endsWith("tutorial")}
+      >Tutorial</NavLi
     >
+    <NavLi href="{base}/credits" active={$page.url.pathname.endsWith("credits")}
+    >Credits</NavLi
+  >
     <NavLi href="https://github.com/csicsi2000/svelte-slot-car-race-management">
       <GithubSolid />
     </NavLi>
@@ -71,5 +79,19 @@
   <div class="p-4">
     <slot />
   </div>
+  <BottomNav position="fixed" navType="group" classInner="grid-cols-5">
+    <BottomNavHeader slot="header" style="pointer-events: none;">
+      {#each Object.keys(RaceStatus) as state}
+        {#if isNaN(Number(state))}
+          {#if state == RaceStatus[$sessionStatus]}
+            <BottomNavHeaderItem itemName={state} active disabled />
+          {:else}
+            <BottomNavHeaderItem itemName={state} disabled />
+          {/if}
+        {/if}
+      {/each}
+    </BottomNavHeader>
+  </BottomNav>
+  <SpeedDial />
 </div>
 <div class="min-h-12" />

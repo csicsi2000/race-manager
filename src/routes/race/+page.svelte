@@ -10,6 +10,7 @@
   let raceInfo: IRaceInfo | null = null;
   currentRace.subscribe((x) => {
     raceInfo = x;
+    console.log(raceInfo);
   });
 </script>
 

@@ -7,8 +7,6 @@
   import RacerData from "$lib/components/dataDisplay/RacerData.svelte";
   import { newPracticeSession, startFormation } from "$lib/utils/raceInfoSession";
   import { type IRaceInfo } from "$lib/_types/interfaces/IRaceInfo";
-  import { routeToPage } from "$lib/utils/navigationHelper";
-  import { PageRoutes } from "$lib/_types/enums/pageRoutes";
 
   let raceInfo: IRaceInfo;
   currentPractice.subscribe((x) => {

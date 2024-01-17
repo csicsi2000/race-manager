@@ -47,6 +47,8 @@
     "flowbite-svelte": "^0.44.20",
     "flowbite-svelte-icons": "^0.4.5",
     "flowbite-typography": "^1.0.3",
+    "qr-scanner": "^1.4.2",
+    "qrcode-generator": "^1.4.4",
     "svelte-i18n": "^4.0.0",
     "tailwind-merge": "^2.1.0",
     "unique-names-generator": "^4.7.1",

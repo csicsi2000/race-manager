@@ -1,6 +1,6 @@
 import { ConnectionStatus } from "$lib/_types/enums/connectionStatus";
 import { SensorSettings } from "$lib/_types/sensorSettings";
-import { connectedIP, connection, sensorReadings, sensorSetting } from "$lib/stores/serverStatus";
+import { connectedSensorIP, connection, sensorReadings, sensorSetting } from "$lib/stores/serverStatus";
 import {
     ArrayQueue,
     ConstantBackoff,
@@ -26,7 +26,7 @@ export class WsServer {
                 localStorage.setItem(settingsName, jsonString);
             }
         });
-        connectedIP.subscribe(x => {
+        connectedSensorIP.subscribe(x => {
             if(WsServer.ws){
             WsServer.ws.close();}
             console.log(x)
