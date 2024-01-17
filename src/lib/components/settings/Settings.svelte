@@ -25,8 +25,8 @@
 
 <form>
   <div class="grid md:grid-cols-2 gap-8">
-  <div class="grid mb-6 gap-4">
-      <Label for="connected_ip" class="mb-2">Sensor IP</Label>
+  <div class="flex flex-col gap-4">
+      <Label for="connected_ip">Sensor IP</Label>
       <Input
         type="text"
         id="connected_ip "
