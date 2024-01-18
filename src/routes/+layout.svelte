@@ -21,6 +21,7 @@
   import { RaceStatus } from "$lib/_types/enums/raceStatus";
   import { sessionStatus } from "$lib/stores/raceInfos";
   import SpeedDial from "$lib/components/navigation/SpeedDial.svelte";
+  import TopNavbar from "$lib/components/navigation/TopNavbar.svelte";
 
   onNavigate((navigation) => {
 
@@ -36,38 +37,7 @@
   connection.subscribe(() => console.warn("Connection state changed" + $connection + ";" + ConnectionStatus.CONNECTED));
 </script>
 
-<Navbar class="z-10 bg-gray-300" let:toggle>
-  <NavBrand>
-    <DarkMode />
-    <span
-      class="self-center whitespace-nowrap text-xl font-semibold dark:text-white pl-3"
-    >
-      <a href="{base}/">Carrera Go lap counter</a>
-    </span>
-  </NavBrand>
-  <NavHamburger on:click={toggle} />
-  <NavUl>
-    <NavLi href="{base}/" active={$page.url.pathname.endsWith("/")}
-    >Practice</NavLi>
-    <NavLi href="{base}/race" active={$page.url.pathname.endsWith("/race")}
-      >Race</NavLi>
-    <NavLi href="{base}/settings" active={$page.url.pathname.endsWith("/settings")}
-    >Settings</NavLi>
-    <NavLi
-      href="{base}/raceHistory"
-      active={$page.url.pathname.endsWith("raceHistory")}>History</NavLi
-    >
-    <NavLi href="{base}/tutorial" active={$page.url.pathname.endsWith("tutorial")}
-      >Tutorial</NavLi
-    >
-    <NavLi href="{base}/credits" active={$page.url.pathname.endsWith("credits")}
-    >Credits</NavLi
-  >
-    <NavLi href="https://github.com/csicsi2000/svelte-slot-car-race-management">
-      <GithubSolid />
-    </NavLi>
-  </NavUl>
-</Navbar>
+<TopNavbar/>
 <div class="my-3">
   <div class="flex items-center justify-center my-4">
     {#if $connection == ConnectionStatus.DISCONNECTED}

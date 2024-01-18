@@ -1,33 +1,44 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import type { PageData } from "./$types";
   import QrScanner from "qr-scanner";
-  import {Heading} from "flowbite-svelte";
+  import { Heading } from "flowbite-svelte";
   import { saveSensorIp } from "$lib/utils/localSettings";
+  import { goto } from "$app/navigation";
+  import { routeToPage } from "$lib/utils/navigationHelper";
+  import { PageRoutes } from "$lib/_types/enums/pageRoutes";
 
   export let data: PageData;
 
   let videoElement: HTMLVideoElement;
-    let isCameraAvailable:boolean;
+  let isCameraAvailable: boolean;
 
+  let qrScanner: QrScanner;
   onMount(() => {
     hasCameraAccess().then((res) => {
-        isCameraAvailable = res;
-    })
+      isCameraAvailable = res;
+    });
 
-    const qrScanner = new QrScanner(videoElement, (result) =>
-      processCodeContent(result)
+    qrScanner = new QrScanner(videoElement, (result) =>
+      processCodeContent(result.data),
+      {highlightCodeOutline: true,
+      highlightScanRegion: true}
     );
     qrScanner.start();
   });
   function processCodeContent(text: string) {
-    let searchParams = new URLSearchParams(text);
-    let serverValue = searchParams.get("server");
-    console.log(serverValue);
+    let searchParams = new URL(text);
+    let serverValue = searchParams.searchParams.get("server");
+    console.log(serverValue );
     if (serverValue?.startsWith("ws")) {
-        saveSensorIp(serverValue);
+      routeToPage(PageRoutes.SETTINGS);
+      saveSensorIp(serverValue);
     }
   }
+
+  onDestroy(() => {
+    qrScanner.stop();
+  });
 
   async function hasCameraAccess(): Promise<boolean> {
     try {
@@ -50,8 +61,10 @@
 </script>
 
 <div class="grid justify-items-center">
-    {#if !isCameraAvailable}
-        <p class="text-2xl">Camera is not available. Please allow it for the site.</p>
-    {/if}
+  {#if !isCameraAvailable}
+    <p class="text-2xl">
+      Camera is not available. Please allow it for the site.
+    </p>
+  {/if}
   <video bind:this={videoElement}></video>
 </div>

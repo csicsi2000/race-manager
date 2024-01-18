@@ -8,8 +8,9 @@ import { get } from "svelte/store";
 import addRacers from "$lib/utils/addTestData";
 import type { IRaceInfo } from "$lib/_types/interfaces/IRaceInfo";
 import { sensorReadings } from '$lib/stores/serverStatus';
-import { WsServer } from '$lib/websocket/wsServer';
+import { WsServer } from '$lib/services/websocket/wsServer';
 import { getSavedSensorIp } from '$lib/utils/localSettings';
+import { newPracticeSession, newRaceSession } from '$lib/utils/raceInfoSession';
 
 
 let database = new LocalStorageDatabase();
@@ -38,6 +39,14 @@ sensorReadings.subscribe(x => {
         //curPractice.racers[0].lapTimes.push(x.)
     }else if(currentStatus == RaceStatus.RACE){
 
+    }
+})
+
+sessionStatus.subscribe(status => {
+    if(status == RaceStatus.FORMATION){
+        newRaceSession();
+    }else if(status == RaceStatus.PRACTICE){
+        newPracticeSession();
     }
 })
 

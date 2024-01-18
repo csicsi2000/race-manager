@@ -1,6 +1,6 @@
 export function formatMs(ms: number) {
   if(!ms){
-    return "Error"
+    return "0"
   }
   let textMillis = String(ms);
   let remainingMillis = textMillis.substring(textMillis.length-3);

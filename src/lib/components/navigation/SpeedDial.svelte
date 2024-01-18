@@ -10,7 +10,7 @@
   } from "flowbite-svelte-icons";
 </script>
 
-<SpeedDial defaultClass="fixed end-6 bottom-[60px]" left>
+<SpeedDial defaultClass="fixed end-6 bottom-[60px]" left textOutside tooltip="none">
   <SpeedDialButton name="Scan" top>
     <a href="{base}/qrScanner">
       <CameraFotoOutline class="w-5 h-5" />

@@ -1,5 +1,6 @@
 export enum PageRoutes{
     HOME = "/",
     RACE = "/race",
-    RACEHISTORY = "/raceHistory"
+    RACEHISTORY = "/raceHistory",
+    SETTINGS = "/settings"
 }

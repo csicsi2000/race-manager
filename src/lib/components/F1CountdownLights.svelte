@@ -129,8 +129,6 @@ sessionStatus.subscribe(x => {
       col[1].color = LightColors.green;
     });
     state = LightStates.FORMATION;
-
-    newRaceSession();
   }
   //#endregion
 

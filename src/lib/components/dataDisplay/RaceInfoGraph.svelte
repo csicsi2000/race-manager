@@ -54,8 +54,8 @@ onMount(() => {
             let formattedTime = String(time - raceInfo.startMillis);
             times.push(
                 {
+                  y: formattedTime,
                     x: index,
-                    y: formattedTime
                 });   
         });
 
@@ -69,21 +69,27 @@ onMount(() => {
 let options: ApexOptions = {
     chart: {
         id: "mainChart",
-        height: "400px",
+        height: "500px",
         width: "100%",
         type: "line",
         fontFamily: "Inter, sans-serif",
+        stacked: false,
         dropShadow: {
             enabled: false,
         },
+        zoom: {
+            type: 'x',
+            enabled: true,
+            autoScaleYaxis: true
+          },
         toolbar: {
-            //autoSelected: 'pan',
-            show: false,
+            autoSelected: 'zoom',
+            show: true,
         },
     },
     series: chartSeries,
     tooltip: {
-      enabled: false,
+      enabled: true,
       x: {
         show: false,
       },
@@ -92,7 +98,7 @@ let options: ApexOptions = {
       enabled: false,
     },
     stroke: {
-      width: 3,
+      width: 2,
       curve: "straight",
     },
     grid: {
@@ -108,11 +114,13 @@ let options: ApexOptions = {
       show: true,
     },
     xaxis: {
+      type: 'numeric',
       //categories: lapCounts,
       title:{
         text: "Lap Count"
       },
       labels: {
+        showDuplicates: false,
         show: true,
         style: {
           fontFamily: "Inter, sans-serif",
@@ -132,6 +140,7 @@ let options: ApexOptions = {
         text: "Time"
       },
       labels: {
+        formatter: formatMs,
         show: true,
         style: {
           fontFamily: "Inter, sans-serif",
@@ -182,5 +191,5 @@ let options: ApexOptions = {
 
 <Card size="xl">
   <Chart {options} />
-  <Chart options={optionsLine}/>
+  <!--Chart options={optionsLine}/-->
 </Card>
