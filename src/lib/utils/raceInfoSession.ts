@@ -8,6 +8,7 @@ import { getUniqueName } from "./uniqueNameGenerator";
 import type { IRaceInfo } from "$lib/_types/interfaces/IRaceInfo";
 import { PageRoutes } from "$lib/_types/enums/pageRoutes";
 import { routeToPage } from "./navigationHelper";
+import { subscribeSessionToSensor } from "$lib/services/laptimesSubscriber";
 
 export function startFormation() {
     sessionStatus.set(RaceStatus.FORMATION);
@@ -26,6 +27,7 @@ export function newPracticeSession(){
     newPractice.raceName = getUniqueName();
     currentPractice.set(newPractice);
 
+    subscribeSessionToSensor(currentPractice);
     generateNewRaceInfo(newPractice);
 }
 
@@ -38,6 +40,7 @@ export function newRaceSession(){
     prepareRace.startDate = new Date();
     currentRace.set(prepareRace);
 
+    subscribeSessionToSensor(currentRace);
     generateNewRaceInfo(prepareRace);
 }
 

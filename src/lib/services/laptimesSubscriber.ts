@@ -1,17 +1,43 @@
+import type { IRaceInfo } from "$lib/_types/interfaces/IRaceInfo";
 import type { RaceInfo } from "$lib/_types/raceInfo";
 import type { SensorData } from "$lib/_types/sensorData";
 import { sensorReadings } from "$lib/stores/serverStatus";
-import type { Unsubscriber, Writable } from "svelte/store";
+import { get, type Unsubscriber, type Writable } from "svelte/store";
 
 let currentUnsubscribe: Unsubscriber;
-let previousSensorData: SensorData;
+let previousReading: SensorData;
 
-export function subscribeToSession(session: Writable<RaceInfo>){
+export function subscribeSessionToSensor(session: Writable<IRaceInfo|null>){
     if(currentUnsubscribe){
         currentUnsubscribe();
     }
-    currentUnsubscribe = sensorReadings.subscribe(() => {
-        
+    currentUnsubscribe = sensorReadings.subscribe((reading) => {
+        if(!reading){
+            return;
+        }
+        if(!previousReading){
+            previousReading = reading;
+            return;
+        }
+        let tempSession = GetLapTime(get(session), previousReading, reading);
+        session.set(tempSession);
+        previousReading = reading;
     })
+
+
 }
 
+function GetLapTime(raceInfo: IRaceInfo|null, prevRead: SensorData, newRead: SensorData): IRaceInfo|null
+{
+    if(raceInfo == null){
+       return null;
+    }
+    
+    newRead.slot_status?.forEach((status, index) => {
+        if(status == true && prevRead.slot_status[index] != true){
+            raceInfo.racers[index].lapTimes.push(newRead.millis);
+        }
+    })    
+
+    return raceInfo;
+}
