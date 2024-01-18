@@ -8,6 +8,11 @@ const dataName = "RaceInfoDatabase";
 const config = "RaceInfoConfig";
 
 export class LocalStorageDatabase implements RaceInfoDatabase {
+    static clearAll(): boolean {
+        localStorage.setItem(config,"");
+        localStorage.setItem(dataName,"");
+        return true;
+    }
     storeRaceConfig(info: IRaceInfo): boolean {
         localStorage.setItem(config, JSON.stringify(info));
         return true;

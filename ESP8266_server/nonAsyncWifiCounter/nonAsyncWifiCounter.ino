@@ -14,10 +14,11 @@
 #include <WiFiManager.h>
 #include <ArduinoJson.h>
 
-const char *SLOT1 = "slot_1";
-const char *SLOT2 = "slot_2";
+const char *SLOT_STATUS = "slot_status";
 const char *MILLIS = "millis";
 const char *THRESHOLD = "threshold";
+
+const int playerCount = 2;
 
 WebSocketsServer webSocket(80, "*");
 String chipModel;
@@ -109,8 +110,11 @@ void loop() {
     slot_status.add(true);
     slot_status.add(false);
 
+    for(int i = 0; i < playerCount; i++){
+      if ((bool)newReading[SLOT_STATUS][i] != (bool)previousReading[SLOT_STATUS][i]){
 
-    if ((bool)newReading[SLOT1] != (bool)previousReading[SLOT1] || (bool)newReading[SLOT2] != (bool)previousReading[SLOT2]) {
+        break;
+      }
     }
 
     String result = "";

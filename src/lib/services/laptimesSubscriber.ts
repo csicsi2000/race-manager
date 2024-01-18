@@ -35,6 +35,7 @@ function GetLapTime(raceInfo: IRaceInfo|null, prevRead: SensorData, newRead: Sen
     
     newRead.slot_status?.forEach((status, index) => {
         if(status == true && prevRead.slot_status[index] != true){
+            console.log("Laptime set " + index);
             raceInfo.racers[index].lapTimes.push(newRead.millis);
         }
     })    

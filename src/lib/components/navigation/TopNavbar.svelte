@@ -27,8 +27,8 @@
         href="{base}/raceHistory"
         active={$page.url.pathname.endsWith("raceHistory")}>History</NavLi
       >
-      <NavLi href="{base}/tutorial" active={$page.url.pathname.endsWith("tutorial")}
-        >Tutorial</NavLi
+      <NavLi href="{base}/setup" active={$page.url.pathname.endsWith("setup")}
+        >Setup</NavLi
       >
       <NavLi href="{base}/credits" active={$page.url.pathname.endsWith("credits")}
       >Credits</NavLi
