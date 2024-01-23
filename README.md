@@ -1,7 +1,7 @@
 # Slot car lap counter
 
-This project will communicate with an esp board using websocket and display information about an analog slot car race status, or simply measure lap times.
-[Visit site](https://csicsi2000.github.io/svelte-slot-car-race-management/)
+This project is a svelte PWA that will communicate with an esp board using WebSocket and display information about an analog slot car race status and measure lap times.  
+[Visit site](https://csicsi2000.github.io/race-manager/)
 
 # Browser configuration
 For the server connection to work you need to enable the insecure content for the webpage as described in this answer: 
