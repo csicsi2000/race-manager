@@ -67,7 +67,7 @@ export let isStickyHeader: boolean = false;
   </div>
     </caption>
 
-    <TableHead theadClass="text-gray-800 dark:text-gray-100 {headerClass} top-25 dark:bg-{racer.color}-600 bg-{racer.color}-300">
+    <TableHead theadClass="text-gray-800 dark:text-gray-100 {headerClass} top-[6rem] dark:bg-{racer.color}-600 bg-{racer.color}-300">
       <TableHeadCell class="text-gray-800 dark:text-gray-100">Lap</TableHeadCell>
       <TableHeadCell class="text-gray-800 dark:text-gray-100 text-right">Lap Time</TableHeadCell>
       <TableHeadCell class="text-gray-800 dark:text-gray-100 text-right">Overall Time</TableHeadCell>
