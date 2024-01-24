@@ -33,11 +33,14 @@ export class WsServer {
             if (x != null) {
                 console.log("Try connecting to " + x);
                 this.StartWebsocket(x);
+                this.startPing();
             }
-        })
+        });
     }
 
+    savedServer: string = "";
     StartWebsocket(server: string) {
+        this.savedServer = server;
         connection.set(ConnectionStatus.DISCONNECTED);
         if (server == null || server == "") {
             console.warn("Missing websocket server info");
@@ -59,13 +62,15 @@ export class WsServer {
             console.error("Invalid websocket address");
             return;
         }
-
-
     }
 
     // Function to output & echo received messages
     echoOnMessage = (i: Websocket, ev: MessageEvent) => {
         console.log(`received message: ${ev.data}`);
+        if(ev.data == "Pong"){
+            this.pinged = false;
+            return;
+        }
         //i.send(`echo: ${ev.data}`);
         sensorReadings.set(ev.data);
     };
@@ -77,6 +82,32 @@ export class WsServer {
     }
 
     serverClosed = () => {
+        console.log("Server closed");
         connection.set(ConnectionStatus.DISCONNECTED);
+    }
+
+    pingInterval:number = -1;
+    pinged: boolean = false;
+
+    private startPing = () =>{
+        clearInterval(this.pingInterval);
+
+        this.pingInterval = setInterval(async () => {
+            if (WsServer.ws.readyState === WebSocket.OPEN) {
+              // Send a ping message
+              WsServer.ws.send("Ping");
+              this.pinged = true;
+              await this.delay(2000);
+              if(this.pinged){
+                console.log("Pong not received.");
+                this.StartWebsocket(this.savedServer);
+                clearInterval(this.pingInterval);
+              }
+            }
+          }, 5000);
+    }
+
+    private delay(ms: number) {
+        return new Promise( resolve => setTimeout(resolve, ms) );
     }
 }

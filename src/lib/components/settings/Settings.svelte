@@ -7,6 +7,7 @@
   import RacerSetting from "$lib/components/settings/RacerSettings.svelte";
   import QrCode from "../dataDisplay/QrCode.svelte";
   import { saveSensorIp } from "$lib/utils/localSettings";
+  import { base } from "$app/paths";
 
   function storeRaceConfig() {
     let database = new LocalStorageDatabase();
@@ -34,11 +35,12 @@
       />
       <Button color="blue" on:click={saveIp}>Connect</Button>
     </div>
+    <div class="flex flex-col">
     <QrCode
-      displayedText={"https://csicsi2000.github.io/svelte-slot-car-race-management?server=" +
-        $connectedSensorIP}
+      displayedText={"https://csicsi2000.github.io/race-manager?server=" +$connectedSensorIP}
     />
-
+    <Label>{"https://csicsi2000.github.io/race-manager?server=" +$connectedSensorIP}</Label>
+  </div>
     {#each $newRaceInfo.racers as racer}
       <RacerSetting bind:racer />
     {/each}
