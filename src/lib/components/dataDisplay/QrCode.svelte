@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { P } from "flowbite-svelte";
   import qrcode from "qrcode-generator";
   import { onMount } from "svelte";
 
@@ -16,6 +17,6 @@
   }
 </script>
 <div class="grid justify-items-center">
-    <p  class="items-center">Scan to share</p>
+    <P  class="items-center">Scan to share</P>
 <div id="qr" bind:this={qrCodeDiv} class="content-center flex justify-center"/>
 </div>

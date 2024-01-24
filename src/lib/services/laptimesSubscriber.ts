@@ -23,8 +23,6 @@ export function subscribeSessionToSensor(session: Writable<IRaceInfo|null>){
         session.set(tempSession);
         previousReading = reading;
     })
-
-
 }
 
 function GetLapTime(raceInfo: IRaceInfo|null, prevRead: SensorData, newRead: SensorData): IRaceInfo|null
