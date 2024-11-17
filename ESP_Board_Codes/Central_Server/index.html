@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arduino Tester</title>
+    <link rel="stylesheet" href="https://unpkg.com/mvp.css">
+</head>
+
+<body>
+    <main>
+        <header>
+            <h1>WebSocket Tester</h1>
+            <h3 id="socketIp"></h3>
+        </header>
+        <div>
+            <button id="pingButton">Send Ping</button>
+        </div>
+        <h2>Messages:</h2>
+        <section>
+            <table id="messageTable" style="max-height: 25rem; scroll-behavior: smooth; ">
+                <thead></thead>
+                    <tr>
+                        <th style="width: 15rem">Timestamp</th>
+                        <th style="width: 20rem">Message</th>
+                    </tr>
+                </thead>
+                <tbody id="messages"></tbody>
+            </table>
+        </section>
+    </main>
+
+    <script>
+        //const socketIp = 'ws://' + window.location.hostname + ':80';
+
+        const socketIp = 'ws://192.168.1.121:80';
+        document.getElementById('socketIp').textContent = socketIp;
+
+        const socket = new WebSocket(socketIp);
+
+        socket.onopen = function () {
+            console.log('WebSocket connection established');
+        };
+
+        function appendMessage(message) {
+            const messagesTable = document.getElementById('messages');
+            const newRow = document.createElement('tr');
+            const timestampCell = document.createElement('td');
+            const messageCell = document.createElement('td');
+            const timestamp = new Date().toLocaleString();
+
+            timestampCell.textContent = timestamp;
+            messageCell.textContent = message;
+
+            newRow.appendChild(timestampCell);
+            newRow.appendChild(messageCell);
+            messagesTable.appendChild(newRow);
+            
+            var table = document.querySelector("#messageTable");
+            table.scrollTop = table.scrollHeight;
+        }
+
+        socket.onmessage = function (event) {
+            appendMessage(event.data);
+        };
+
+        socket.onclose = function () {
+            appendMessage('WebSocket connection closed');
+        };
+
+        socket.onerror = function (error) {
+            console.error('WebSocket error:', error);
+        };
+
+        document.getElementById('pingButton').addEventListener('click', function () {
+            socket.send('Ping');
+        });
+    </script>
+</body>
+
+</html>

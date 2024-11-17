@@ -1,0 +1,16 @@
+# Introduction
+
+ESP8266 with a 128x64 pixel display
+
+This Arduino hosts a webserver that provides:
+- Websockets with information (Port: 80)
+- Simple status page to check if it is working (Port: 81)
+
+# How to use
+- Connect to WiFiManager using the information on the display
+- If Successfull the IP of the esp will be shown
+- Use Racemanager page to and paste the ip address into that
+
+# FAQ
+
+- Generate PROGEM from bitmap: https://javl.github.io/image2cpp/

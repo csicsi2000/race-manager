@@ -1,8 +1,8 @@
 {
   "short_name": "Race manager",
   "name": "slot car race manager",
-  "scope": "https://csicsi2000.github.io/svelte-slot-car-race-management/", 
-  "start_url": "https://csicsi2000.github.io/svelte-slot-car-race-management/",
+  "scope": "https://csicsi2000.github.io/race-manager/", 
+  "start_url": "https://csicsi2000.github.io/race-manager/",
   "icons": [
     {
       "src": "racing-flag-512x512.png",
