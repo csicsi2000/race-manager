@@ -1,17 +1,10 @@
 <script lang="ts">
-  import type Racer from "$lib/_types/racer";
-  import { Input, Label, Card, Heading, Select, Button } from "flowbite-svelte";
+  import { Input, Label, Card, Heading } from "flowbite-svelte";
   import colors from "tailwindcss/colors";
   import { onMount } from "svelte";
   import { type IRacer } from "$lib/_types/interfaces/IRacer";
 
   export let racer: IRacer;
-
-  let selectedColor: string = racer.color;
-  $: {
-    racer.color = selectedColor;
-    console.log("Selected color: " + selectedColor);
-  }
 
   let colorValues: string[] = [];
 
@@ -23,7 +16,6 @@
       }
       colorValues.push(key);
     });
-    console.log(racer.color);
   });
 
   function capitalizeFirstLetter(text: string) {
@@ -50,11 +42,7 @@
       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
     >
       {#each colorValues as color (color)}
-      {#if racer.color == selectedColor}
-        <option value={color} selected>{capitalizeFirstLetter(color)}</option>
-        {:else}
-        <option value={color} >{capitalizeFirstLetter(color)}</option>
-        {/if}
+        <option value={color}>{capitalizeFirstLetter(color)}</option>
       {/each}
     </select>
   </div>

@@ -2,17 +2,17 @@ import { RaceStatus } from "$lib/_types/enums/raceStatus";
 import type { IRaceInfo } from "$lib/_types/interfaces/IRaceInfo";
 import type { RaceInfoDatabase } from "$lib/_types/interfaces/raceInfoDatabase";
 import { RaceInfo } from "$lib/_types/raceInfo";
-import { error } from "@sveltejs/kit";
 
 const dataName = "RaceInfoDatabase";
 const config = "RaceInfoConfig";
 
 export class LocalStorageDatabase implements RaceInfoDatabase {
     static clearAll(): boolean {
-        localStorage.setItem(config,"");
-        localStorage.setItem(dataName,"");
+        localStorage.removeItem(config);
+        localStorage.removeItem(dataName);
         return true;
     }
+    
     storeRaceConfig(info: IRaceInfo): boolean {
         localStorage.setItem(config, JSON.stringify(info));
         return true;
@@ -21,10 +21,8 @@ export class LocalStorageDatabase implements RaceInfoDatabase {
     getRaceConfig(): IRaceInfo {
         try {
             let allData = localStorage.getItem(config);
-            if (typeof allData === 'string') {
-                let formatted = JSON.parse(allData) as RaceInfo;
-                console.log(formatted);
-                return formatted;
+            if (allData) {
+                return normalizeRaceInfo(JSON.parse(allData) as IRaceInfo);
             }
             throw new Error();
         }
@@ -53,9 +51,8 @@ export class LocalStorageDatabase implements RaceInfoDatabase {
     getRaceInfos(): IRaceInfo[] {
         try {
             let allData = localStorage.getItem(dataName);
-            if (typeof allData === 'string') {
-                let formatted = JSON.parse(allData) as RaceInfo[];
-                return formatted;
+            if (allData) {
+                return (JSON.parse(allData) as IRaceInfo[]).map(normalizeRaceInfo);
             }
             throw new Error();
         }
@@ -100,4 +97,16 @@ export class LocalStorageDatabase implements RaceInfoDatabase {
         }
     }
 
+}
+
+function normalizeRaceInfo(info: IRaceInfo): IRaceInfo {
+    return {
+        ...new RaceInfo(info.raceStatus ?? RaceStatus.PRACTICE),
+        ...info,
+        startDate: info.startDate ? new Date(info.startDate) : new Date(),
+        startMillis: Number.isFinite(Number(info.startMillis)) ? Number(info.startMillis) : -1,
+        countdownEndMillis: Number.isFinite(Number(info.countdownEndMillis)) ? Number(info.countdownEndMillis) : -1,
+        lapCount: Number.isFinite(Number(info.lapCount)) ? Number(info.lapCount) : 10,
+        racers: info.racers ?? []
+    };
 }

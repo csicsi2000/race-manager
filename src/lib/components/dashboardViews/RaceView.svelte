@@ -1,39 +1,34 @@
 <script lang="ts">
-  import { RaceStatus } from "$lib/_types/enums/raceStatus";
   import Racer from "$lib/_types/racer";
-  import { currentPractice, sessionStatus } from "$lib/stores/raceInfos";
   import { base } from "$app/paths";
   import { Table, Heading, Button } from "flowbite-svelte";
-  import autoAnimate from "@formkit/auto-animate";
   import { getMillisBehind } from "$lib/utils/racerHelpers";
-  import { cancelRace, newPracticeSession } from "$lib/utils/raceInfoSession";
-  import { type IRacer } from "$lib/_types/interfaces/IRacer";
+  import { cancelRace } from "$lib/utils/raceInfoSession";
   import { formatMs } from "$lib/utils/converters/timeConverter";
   import { type IRaceInfo } from "$lib/_types/interfaces/IRaceInfo";
 
   export let raceInfo: IRaceInfo;
 
-  function endRace() {}
-
   $:{
     raceInfo.racers.sort(Racer.racerCompare);
+    currentLap = Math.max(1, ...raceInfo.racers.map((racer) => racer.lapTimes.length));
   }
 
   let currentLap = 1;
 </script>
 
 <div class="grid gap-6">
-  <div class="grid gap-6 mb-6 bg-gray-100 dark:bg-gray-700 rounded">
+  <div class="grid gap-6 mb-6 rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
     <div>
       <div class="text-center">
-        <Heading tag="h4" class="m-4">{$currentPractice.raceName}</Heading>
+        <Heading tag="h4" class="m-4">{raceInfo.raceName}</Heading>
         <Heading tag="h5" class="m-4"
-          >LAP {currentLap}/{$currentPractice.lapCount}</Heading
+          >LAP {currentLap}/{raceInfo.lapCount}</Heading
         >
       </div>
 
       <Table striped={true} divClass="tabular-nums">
-        <tbody use:autoAnimate>
+        <tbody>
           {#each raceInfo.racers as racer, index (racer.name)}
             <tr
               class="dark:bg-{racer.color}-900 bg-gray-300 border-b dark:border-gray-700"
@@ -57,6 +52,7 @@
                 <td
                   class="px-5 py-4 text-gray-800 dark:text-white text-xl text-right"
                 >
+                  Waiting
                 </td>
               {:else if index == 0}
                 <td

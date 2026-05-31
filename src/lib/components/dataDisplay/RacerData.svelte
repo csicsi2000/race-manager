@@ -11,7 +11,8 @@
     TableBodyRow,
     TableHead,
     TableHeadCell,
-    Toggle
+    Toggle,
+    Button
   } from "flowbite-svelte";
   import { onMount } from "svelte";
 
@@ -30,17 +31,26 @@ export let isStickyHeader: boolean = false;
   }
   onMount(() => updateBestLapTime(racer))
 
+  function removeLap(index: number) {
+    racer.lapTimes = racer.lapTimes.filter((_, lapIndex) => lapIndex !== index);
+    racer.bestLapTime = -1;
+    updateBestLapTime(racer);
+  }
+
   $: {
     getNewBestLapTime(racer);
-    if (racer.lapTimes.length > 0 && tableChild && !manualScrollOnly && isAutoScrolling) {
-
+    if (racer.lapTimes.length > 0) {
       bestLapTime = formatMs(racer.bestLapTime);
+    }
+    if (racer.lapTimes.length > 0 && tableChild && !manualScrollOnly && isAutoScrolling) {
       let tableNode = tableChild.parentNode?.parentNode;
       setTimeout(() => {
         if (tableNode instanceof HTMLElement  && isAutoScrolling) {
           scrollToBottom(tableNode);
         }
       }, 100);
+    } else if (racer.lapTimes.length === 0) {
+      bestLapTime = "Not set";
     }
   }
 </script>
@@ -64,6 +74,7 @@ export let isStickyHeader: boolean = false;
       {#if !manualScrollOnly}
       <Toggle bind:checked={isAutoScrolling}>Auto scroll</Toggle>
       {/if}
+      <Button size="xs" color="alternative" disabled={racer.lapTimes.length === 0} on:click={() => removeLap(racer.lapTimes.length - 1)}>Undo last</Button>
   </div>
     </caption>
 
@@ -71,6 +82,7 @@ export let isStickyHeader: boolean = false;
       <TableHeadCell class="text-gray-800 dark:text-gray-100">Lap</TableHeadCell>
       <TableHeadCell class="text-gray-800 dark:text-gray-100 text-right">Lap Time</TableHeadCell>
       <TableHeadCell class="text-gray-800 dark:text-gray-100 text-right">Overall Time</TableHeadCell>
+      <TableHeadCell class="text-gray-800 dark:text-gray-100 text-right">Fix</TableHeadCell>
     </TableHead>
     <TableBody tableBodyClass="divide-y-2 dark:divide-gray-500 divide-gray-400">
       {#each racer.lapTimes as times, index}
@@ -82,6 +94,9 @@ export let isStickyHeader: boolean = false;
             <TableBodyCell class="text-right">{formatMs(times - racer.lapTimes[index - 1])}</TableBodyCell>
           {/if}
           <TableBodyCell class="text-right">{formatMs(times)}</TableBodyCell>
+          <TableBodyCell class="text-right">
+            <button class="text-xs font-medium text-red-700 hover:underline dark:text-red-300" on:click={() => removeLap(index)}>Delete</button>
+          </TableBodyCell>
         </TableBodyRow>
       {/each}
     </TableBody>

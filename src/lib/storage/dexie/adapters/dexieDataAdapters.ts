@@ -32,7 +32,7 @@ export class DexiaDataAdapters{
             dbRacer.raceId = dbRaceInfo.id;
             dbRacer.color = x.color;
             dbRacer.name = x.name;
-            dbRacer.startTime = x.startTime;
+            dbRacer.startTime = x.startMillis;
             dbRacer.lapTimes = x.lapTimes.join(delimeter);
 
             this.db.table("racers").add(dbRacer);

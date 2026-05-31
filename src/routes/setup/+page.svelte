@@ -1,102 +1,53 @@
 <script lang="ts">
-  import { base } from "$app/paths";
   import CopyToClipboard from "$lib/components/CopyToClipboard.svelte";
-  import type { PageData } from "../$types";
-  import {
-    Heading,
-    List,
-    Li,
-    Img,
-    Accordion,
-    AccordionItem,
-  } from "flowbite-svelte";
-
-  export let data: PageData;
+  import { Heading, List, Li, Accordion, AccordionItem } from "flowbite-svelte";
 </script>
 
-<div class="w-4/5 lg:max-w-screen-lg mx-auto">
-  <article
-    id="ServerConfig"
-    class="w-full mt-5 mb-2 max-w-max text-gray-800 dark:text-gray-400"
-  >
-    <Heading tag="h2" class="mb-2">Enable server as secure IP (Mixed content)</Heading>
+<div class="mx-auto grid w-full max-w-screen-lg gap-6 px-4 py-4">
+  <section class="rounded-lg border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+    <Heading tag="h2" class="mb-3">Quick setup</Heading>
     <List tag="ol" class="space-y-2">
-      <Li>
-        You can find the server address in the settings page, or from the url
-        when you scan the esp board unit.<br /> (e.g. ws://192.168.178.101)
-      </Li>
-      <Li> Following browsers supports:
-        <Accordion>
-          <AccordionItem>
-            <span slot="header">Google Chrome</span>
-            <List tag="ol">
-              <Li>
-                <p class="mb-2 text-gray-800 dark:text-gray-400">
-                  On Chrome go to the link below (Click to copy):
-                  <CopyToClipboard
-                    textToCopy="chrome://flags/#unsafely-treat-insecure-origin-as-secure"
-                    >chrome://flags/#unsafely-treat-insecure-origin-as-secure</CopyToClipboard
-                  >
-                </p>
-              </Li>
-              <Li>
-                Add the server url to the box, and enable <code
-                  >unsafely-treat-insecure-origin-as-secure</code
-                > option. Then relaunch the browser.
-              </Li>
-              <Img
-                src={base + "/img/unsecure.png"}
-                alt="Image of the unsecured option on chrome"
-              />
-            </List>
-          </AccordionItem>
-          <AccordionItem>
-            <span slot="header">Edge</span>
-            <List tag="ol">
-              <Li>
-                <p class="mb-2 text-gray-800 dark:text-gray-400">
-                  On Edge go to the link below (Click to copy):
-                  <CopyToClipboard
-                    textToCopy="edge://flags/"
-                    >edge://flags/#unsafely-treat-insecure-origin-as-secure</CopyToClipboard
-                  >
-                </p>
-              </Li>
-              <Li>
-                Add the server url to the box, and enable <code
-                  >unsafely-treat-insecure-origin-as-secure</code
-                > option. Then relaunch the browser.
-              </Li>
-              <Img
-                src={base + "/img/unsecure.png"}
-                alt="Image of the unsecured option on chrome"
-              />
-            </List>
-          </AccordionItem>
-          <AccordionItem>
-            <span slot="header">Firefox (Nightly)</span>
-            <List tag="ol">
-              <Li>
-                <p class="mb-2 text-gray-800 dark:text-gray-400">
-                  On Firefox go to the link below (Click to copy):
-                  <CopyToClipboard textToCopy="about:config"
-                    >about:config</CopyToClipboard
-                  >
-                </p>
-              </Li>
-              <Li>
-                Set the following setting to true <code
-                  >network.websocket.allowInsecureFromHTTPS</code
-                > option. Then relaunch the browser.
-              </Li>
-              <Img
-                src={base + "/img/firefoxUnsecure.png"}
-                alt="Image of the unsecured option on firefox"
-              />
-            </List>
-          </AccordionItem>
-        </Accordion>
-      </Li>
+      <Li>Flash the ESP firmware from <code>ESP_Board_Codes/Central_Server/nonAsyncWifiCounter_withScreen_TextOnly</code>.</Li>
+      <Li>Connect to the <code>RaceM-Server</code> Wi-Fi setup portal if the board has no saved Wi-Fi.</Li>
+      <Li>Open <code>http://SENSOR_IP:81</code> and verify live WebSocket messages.</Li>
+      <Li>In Settings, enter <code>ws://SENSOR_IP</code>, tune minimum lap time, and enable voice cues if wanted.</Li>
+      <Li>Run practice mode and pass each car through the sensor before starting a race.</Li>
     </List>
-  </article>
+  </section>
+
+  <section class="rounded-lg border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+    <Heading tag="h2" class="mb-3">Browser notes</Heading>
+    <p class="mb-4 text-gray-700 dark:text-gray-300">
+      If you use the deployed HTTPS site with a local ESP WebSocket, some browsers block mixed content. Running the app locally avoids this during development.
+    </p>
+    <Accordion>
+      <AccordionItem>
+        <span slot="header">Chrome / Edge HTTPS exception</span>
+        <List tag="ol" class="space-y-2">
+          <Li>
+            Open:
+            <CopyToClipboard textToCopy="chrome://flags/#unsafely-treat-insecure-origin-as-secure">chrome://flags/#unsafely-treat-insecure-origin-as-secure</CopyToClipboard>
+          </Li>
+          <Li>Add the deployed app origin and the ESP origin, then relaunch the browser.</Li>
+        </List>
+      </AccordionItem>
+      <AccordionItem>
+        <span slot="header">Firefox Nightly</span>
+        <List tag="ol" class="space-y-2">
+          <Li>
+            Open:
+            <CopyToClipboard textToCopy="about:config">about:config</CopyToClipboard>
+          </Li>
+          <Li>Set <code>network.websocket.allowInsecureFromHTTPS</code> to <code>true</code>.</Li>
+        </List>
+      </AccordionItem>
+    </Accordion>
+  </section>
+
+  <section class="rounded-lg border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+    <Heading tag="h2" class="mb-3">Physical sensor recommendation</Heading>
+    <p class="text-gray-700 dark:text-gray-300">
+      Use one active-low IR break-beam per lane for the reliable build. Reflective IR modules work for a fast prototype, but car color and room light can create false triggers. Full wiring is in <code>HARDWARE.md</code>.
+    </p>
+  </section>
 </div>

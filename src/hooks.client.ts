@@ -1,16 +1,13 @@
-import { browser, building } from '$app/environment';
 import { LocalStorageDatabase } from "$lib/storage/localstorage/localStorageDatabase";
 import { currentPractice,  newRaceInfo, sessionStatus } from "$lib/stores/raceInfos";
 import { RaceInfo } from "$lib/_types/raceInfo";
 import { RaceStatus } from "$lib/_types/enums/raceStatus";
 import { raceHistory } from "$lib/stores/raceHistory";
 import { get } from "svelte/store";
-import addRacers from "$lib/utils/addTestData";
 import type { IRaceInfo } from "$lib/_types/interfaces/IRaceInfo";
-import { sensorReadings } from '$lib/stores/serverStatus';
 import { WsServer } from '$lib/services/websocket/wsServer';
 import { getSavedSensorIp } from '$lib/utils/localSettings';
-import { newPracticeSession, newRaceSession } from '$lib/utils/raceInfoSession';
+import { newRaceSession } from '$lib/utils/raceInfoSession';
 
 
 let database = new LocalStorageDatabase();
@@ -30,27 +27,16 @@ raceHistory.set(database.getRaceInfos());
 raceHistory.subscribe(x => database.setAllRaceInfos(x));
 console.log("Racehistories: " + get(raceHistory).length);
 
-let previousReading = get(sensorReadings);
-sensorReadings.subscribe(x => {
-    let currentStatus = get(sessionStatus);
-    if(currentStatus == RaceStatus.PRACTICE){
-        let curPractice = get(currentPractice);
-        
-        //curPractice.racers[0].lapTimes.push(x.)
-    }else if(currentStatus == RaceStatus.RACE){
-
-    }
-})
-
 sessionStatus.subscribe(status => {
     if(status == RaceStatus.FORMATION){
         newRaceSession();
-    }else if(status == RaceStatus.PRACTICE){
-        newPracticeSession();
     }
 })
 
 getSavedSensorIp();
 
 let ws = new WsServer();
-addRacers();
+
+export function handleError({ error }: { error: unknown }) {
+    console.error(error);
+}

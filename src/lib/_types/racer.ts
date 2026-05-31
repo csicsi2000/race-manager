@@ -15,13 +15,16 @@ export default class Racer{
 
     static racerCompare(racer1: Racer, racer2: Racer){
         if(racer1.lapTimes.length > racer2.lapTimes.length){
-            return 1;
+            return -1;
         }
         if(racer1.lapTimes.length < racer2.lapTimes.length){
-            return -1;
+            return 1;
         }
 
         let lastLap = racer1.lapTimes.length -1;
+        if(lastLap < 0){
+            return 0;
+        }
         if(racer1.lapTimes[lastLap] > racer2.lapTimes[lastLap] ){
             return 1;
         }

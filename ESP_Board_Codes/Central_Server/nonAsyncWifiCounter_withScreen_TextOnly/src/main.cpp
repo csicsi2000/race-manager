@@ -1,446 +1,273 @@
 #if defined(ESP8266)
 #include <ESP8266WiFi.h>
 #include <ESPAsyncTCP.h>
-
 #elif defined(ESP32)
 #include <WiFi.h>
 #include <AsyncTCP.h>
 #endif
 
-#include <WiFiManager.h>
-WiFiManager wm;
-
-#define WEBSERVER_H
+#include <ArduinoJson.h>
 #include <ESPAsyncWebServer.h>
 #include <WebSocketsServer.h>
-#include <ArduinoJson.h>
+#include <WiFiManager.h>
 
 #include <Adafruit_GFX.h>
-#include <Fonts/FreeSans9pt7b.h>
 #include <Adafruit_SSD1306.h>
 #include <Wire.h>
 
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
 #define OLED_RESET -1
-#define SCREEN_ADDRESS 0x3C ///< See datasheet for Address; 0x3D for 128x64, 0x3C for 128x32
+#define SCREEN_ADDRESS 0x3C
 
-const int playerCount = 2;
+#if defined(ESP8266)
+const uint8_t OLED_SDA_PIN = 4;   // D2
+const uint8_t OLED_SCL_PIN = 5;   // D1
+const uint8_t DEFAULT_LANE_PINS[] = {14, 12}; // D5, D6
+#else
+const uint8_t OLED_SDA_PIN = 21;
+const uint8_t OLED_SCL_PIN = 22;
+const uint8_t DEFAULT_LANE_PINS[] = {25, 26};
+#endif
 
-#pragma region icon
-// 'favicon', 128x64px
-static const unsigned char PROGMEM logo_bmp[] =  {
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x1f, 0xf8, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xfe, 0x0f, 0xf0, 0x7f, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xe0, 0x07, 0xe0, 0x07, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x9e, 0x07, 0xe0, 0x71, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x7f, 0x07, 0xe0, 0xfc, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xfe, 0x3f, 0x03, 0xc0, 0xfc, 0x7f, 0xff, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xf8, 0x3f, 0x83, 0xc0, 0xfc, 0x1f, 0xff, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xf0, 0x1f, 0x81, 0x81, 0xf8, 0x0f, 0xff, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xe0, 0x1f, 0x81, 0x81, 0xf8, 0x07, 0xff, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xd0, 0x1e, 0x00, 0x00, 0x78, 0x0b, 0xff, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xb0, 0x00, 0x00, 0x00, 0x00, 0x0d, 0xff, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xff, 0x78, 0x10, 0x00, 0x00, 0x08, 0x1e, 0xff, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xfc, 0xf8, 0x78, 0x00, 0x00, 0x1c, 0x1f, 0x3f, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xf3, 0xfc, 0xf8, 0x00, 0x00, 0x1f, 0x3f, 0x8f, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0x01, 0xfd, 0xfc, 0x00, 0x00, 0x1f, 0xbf, 0x80, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xfe, 0x01, 0xff, 0xfc, 0x00, 0x00, 0x3f, 0xff, 0x80, 0x7f, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xfe, 0x01, 0xf9, 0xfd, 0xf8, 0x1f, 0x3f, 0x9f, 0x80, 0x7f, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xfe, 0x00, 0xf1, 0xfd, 0xf8, 0x1f, 0xbf, 0x8f, 0x00, 0x7f, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0x00, 0xe0, 0xf9, 0xfc, 0x1f, 0x8f, 0x07, 0x00, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0x00, 0x40, 0xe1, 0xfc, 0x1f, 0x07, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0x80, 0x80, 0xc0, 0xfc, 0x1f, 0x02, 0x01, 0x01, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xbf, 0xc0, 0x00, 0xfe, 0x0f, 0x00, 0x01, 0xf9, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xdf, 0xc0, 0x80, 0x60, 0x06, 0x01, 0x03, 0xfb, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xdf, 0xc1, 0xc0, 0x00, 0x00, 0x03, 0x83, 0xfb, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xdf, 0xe3, 0xc0, 0x40, 0x02, 0x03, 0xc7, 0xfb, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xef, 0xef, 0xe1, 0xc0, 0x03, 0x87, 0xe7, 0xf7, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xef, 0xff, 0xe3, 0x80, 0x01, 0xc7, 0xf7, 0xf7, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xf7, 0x8f, 0xf7, 0x80, 0x01, 0xe7, 0xf0, 0xef, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xf0, 0x0f, 0xef, 0x81, 0x81, 0xf7, 0xf0, 0x0f, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xf0, 0x07, 0xdf, 0x01, 0x80, 0xfb, 0xe0, 0x0f, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xf8, 0x07, 0xbf, 0x01, 0x80, 0xfd, 0xe0, 0x1f, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xf8, 0x03, 0x7e, 0x03, 0xc0, 0x7e, 0x40, 0x1f, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xfc, 0x01, 0xfe, 0x03, 0xc0, 0x7f, 0x80, 0x3f, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xfc, 0x03, 0xfe, 0x07, 0xe0, 0x7f, 0xc0, 0x3f, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xfe, 0x0f, 0xfc, 0x07, 0xe0, 0x3f, 0xf0, 0x7f, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xfc, 0x0f, 0xf0, 0x3f, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xf8, 0x0f, 0xf0, 0x1f, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xf8, 0x0f, 0xf0, 0x1f, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xf0, 0x1f, 0xf8, 0x0f, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xf0, 0x1f, 0xf8, 0x0f, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xf0, 0x3f, 0xfc, 0x0f, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xe0, 0x3f, 0xfc, 0x07, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xe0, 0x3f, 0xfc, 0x07, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xc0, 0x7f, 0xfe, 0x03, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xc0, 0x7f, 0xfe, 0x03, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xc0, 0xff, 0xff, 0x03, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xc0, 0xff, 0xff, 0x03, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xe1, 0xff, 0xff, 0x87, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 
-	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
+const uint8_t LANE_COUNT = sizeof(DEFAULT_LANE_PINS) / sizeof(DEFAULT_LANE_PINS[0]);
+const char *AP_NAME = "RaceM-Server";
+const char *AP_PASSWORD = "admin1234";
+const unsigned long HEARTBEAT_MS = 1000;
+const unsigned long SENSOR_DEBOUNCE_MS = 35;
+
+struct LaneState {
+  uint8_t pin;
+  bool active;
+  bool lastRawActive;
+  unsigned long changedAt;
 };
 
-// Array of all bitmaps for convenience. (Total bytes used to store images in PROGMEM = 1040)
-
-#pragma endregion
-
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
-
-const char *MESSAGE_CONFIGURE_WIFI[4] = {"Scan QR", "to setup", "WiFi", ""};
-const char *MESSAGE_OPEN_WEBAPP[4] = {"Scan QR", "to open", "race manager", "webapp "};
-
-const char *SLOT_STATUS = "slot_status";
-const char *MILLIS = "millis";
-const char *THRESHOLD = "threshold";
-
+AsyncWebServer httpServer(81);
 WebSocketsServer webSocket(80, "*");
-String chipModel;
-unsigned long startTime;
+WiFiManager wifiManager;
+
+LaneState lanes[LANE_COUNT];
+bool displayReady = false;
+unsigned long lastHeartbeatAt = 0;
 int threshold = 100;
 
-const char *wifiPassword = "admin1234";
-String wifiName;
-
-const int cursor_start_y = 15;
-const int cursor_start_x = 0;
-const int font_height = 15;
-
-AsyncWebServer server(81);
-
-#pragma region HtmlCode
-
-const char* htmlPage = R"rawliteral(
-<!DOCTYPE html>
+const char *htmlPage = R"rawliteral(
+<!doctype html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arduino Tester</title>
-    <link rel="stylesheet" href="https://unpkg.com/mvp.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Race Manager Sensor</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 2rem; line-height: 1.4; }
+    code, pre { background: #f1f5f9; border-radius: .4rem; padding: .2rem .4rem; }
+    .ok { color: #047857; font-weight: 700; }
+  </style>
 </head>
-
 <body>
-    <main>
-        <header>
-            <h1>WebSocket Tester</h1>
-            <h3 id="socketIp"></h3>
-        </header>
-        <div>
-            <button id="pingButton">Send Ping</button>
-        </div>
-        <h2>Messages:</h2>
-        <section>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Timestamp</th>
-                        <th>Message</th>
-                    </tr>
-                </thead>
-                <tbody id="messages"></tbody>
-            </table>
-        </section>
-    </main>
-
-    <script>
-        const socketIp = 'ws://' + window.location.hostname + ':80';
-        document.getElementById('socketIp').textContent = socketIp;
-
-        const socket = new WebSocket(socketIp);
-
-        socket.onopen = function () {
-            console.log('WebSocket connection established');
-        };
-
-        function appendMessage(message) {
-            const messagesTable = document.getElementById('messages');
-            const newRow = document.createElement('tr');
-            const timestampCell = document.createElement('td');
-            const messageCell = document.createElement('td');
-            const timestamp = new Date().toLocaleString();
-
-            timestampCell.textContent = timestamp;
-            messageCell.textContent = message;
-
-            newRow.appendChild(timestampCell);
-            newRow.appendChild(messageCell);
-            messagesTable.appendChild(newRow);
-        }
-
-        socket.onmessage = function (event) {
-            appendMessage(event.data);
-        };
-
-        socket.onclose = function () {
-            appendMessage('WebSocket connection closed');
-        };
-
-        socket.onerror = function (error) {
-            console.error('WebSocket error:', error);
-        };
-
-        document.getElementById('pingButton').addEventListener('click', function () {
-            socket.send('Ping');
-        });
-    </script>
+  <h1>Race Manager Sensor</h1>
+  <p class="ok">Sensor bridge is running.</p>
+  <p>Use this WebSocket URL in the app:</p>
+  <pre id="url"></pre>
+  <p>Messages are shown below for quick testing.</p>
+  <pre id="messages"></pre>
+  <script>
+    const url = `ws://${location.hostname}:80`;
+    document.getElementById("url").textContent = url;
+    const messages = document.getElementById("messages");
+    const ws = new WebSocket(url);
+    ws.onopen = () => ws.send("Ping");
+    ws.onmessage = (event) => messages.textContent = `${event.data}\n${messages.textContent}`.slice(0, 3000);
+  </script>
 </body>
-
 </html>
 )rawliteral";
 
-#pragma endregion
-
-void setupScreen();
-void setupWebSocket();
+void setupDisplay();
+void drawStatus(const char *line1, const char *line2 = "", const char *line3 = "", const char *line4 = "");
 void setupWifi();
-void configModeCallback(WiFiManager *myWiFiManager);
+void setupHttpServer();
+void setupWebSocket();
+void setupSensors();
 void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length);
 void handleWebSocketMessage(uint8_t num, uint8_t *payload, size_t length);
-void notifyClients(String sensorReadings);
-StaticJsonDocument<96> getJsonSensorData();
-String getJsonInfo();
-void resetScreen();
-void drawTexts(const char *lines[]);
+void broadcastSensorState(const char *eventType);
+void pollSensors();
+bool readLaneActive(uint8_t pin);
 
-void setup()
-{
+void setup() {
   Serial.begin(115200);
-  setupScreen();
+  delay(100);
 
-#if defined(ESP8266)
-  chipModel = "ESP8266";
-#else // ESP32
-  chipModel = "ESP32";
-#endif
-
-  Serial.println(chipModel);
+  setupDisplay();
+  setupSensors();
   setupWifi();
+  setupHttpServer();
   setupWebSocket();
-
-  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
-    Serial.println("Main page requested");
-    request->send_P(200, "text/html", htmlPage);
-  });
-
-  // Start the server
-  server.begin();
+  broadcastSensorState("boot");
 }
 
-void setupScreen()
-{
-  Wire.begin(14, 12);
-  if (!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS))
-  {
-    Serial.println(F("SSD1306 allocation failed"));
-    for (;;)
-      ; // Don't proceed, loop forever
+void loop() {
+  webSocket.loop();
+  pollSensors();
+
+  const unsigned long now = millis();
+  if (now - lastHeartbeatAt >= HEARTBEAT_MS) {
+    lastHeartbeatAt = now;
+    broadcastSensorState("heartbeat");
   }
-  display.setTextColor(1, 0);
+}
+
+void setupDisplay() {
+  Wire.begin(OLED_SDA_PIN, OLED_SCL_PIN);
+  displayReady = display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS);
+  if (!displayReady) {
+    Serial.println(F("OLED not found; continuing without display."));
+    return;
+  }
+
+  display.setTextColor(SSD1306_WHITE);
+  display.setTextSize(1);
+  drawStatus("Race Manager", "Starting sensor");
+}
+
+void drawStatus(const char *line1, const char *line2, const char *line3, const char *line4) {
+  if (!displayReady) {
+    return;
+  }
+
   display.clearDisplay();
-  display.setFont(&FreeSans9pt7b);
-  display.drawBitmap(0, 0, logo_bmp, SCREEN_WIDTH, SCREEN_HEIGHT, 1);
+  display.setCursor(0, 0);
+  display.println(line1);
+  display.println(line2);
+  display.println(line3);
+  display.println(line4);
   display.display();
 }
 
-void setupWebSocket()
-{
-  webSocket.begin();
-  webSocket.onEvent(webSocketEvent);
-  Serial.println("Websocket started");
+void setupSensors() {
+  for (uint8_t i = 0; i < LANE_COUNT; i++) {
+    lanes[i] = {DEFAULT_LANE_PINS[i], false, false, 0};
+    pinMode(lanes[i].pin, INPUT_PULLUP);
+  }
 }
 
-void setupWifi()
-{
-  bool res;
+void setupWifi() {
+  WiFi.mode(WIFI_AP_STA);
+  wifiManager.setConfigPortalTimeout(180);
+  wifiManager.setBreakAfterConfig(true);
+  drawStatus("WiFi setup", AP_NAME, AP_PASSWORD);
 
-  long randNumber = random(100);
-  wifiName = "RaceM-Server"; // + String(randNumber); // + String(randNumber);
-  // wm.setSTAStaticIPConfig(IPAddress(192,168,1,99), IPAddress(192,168,1,1), IPAddress(255,255,255,0));
-  wm.setAPCallback(configModeCallback);
-
-  wm.setConfigPortalTimeout(180); // Timeout after 3 minutes
-  wm.setBreakAfterConfig(true); //
-
-  res = wm.autoConnect(wifiName.c_str(), wifiPassword);
-
-  if (!res)
-  {
-    Serial.println("Failed to connect");
+  if (!wifiManager.autoConnect(AP_NAME, AP_PASSWORD)) {
+    Serial.println(F("WiFi setup failed. Restarting."));
+    delay(1000);
     ESP.restart();
   }
-  else
-  {
-    Serial.println("Connected");
-    Serial.println("Port: 81");
-  }
-  resetScreen();
-  display.setCursor(cursor_start_x, cursor_start_y);
-  display.println(F("IP address: "));
-  display.setCursor(cursor_start_x, cursor_start_y + font_height);
-  display.println(WiFi.localIP());
-  display.println("Port: 81");
-  display.display();
+
+  Serial.print(F("IP address: "));
+  Serial.println(WiFi.localIP());
+  drawStatus("Connected", WiFi.localIP().toString().c_str(), "HTTP: 81", "WebSocket: 80");
 }
 
-void configModeCallback(WiFiManager *myWiFiManager)
-{
-  Serial.println("Entered config mode");
-  // Format the QR code string
-  char qrCodeString[100]; // Adjust the size as needed
-  snprintf(qrCodeString, sizeof(qrCodeString), "WIFI:S:%s;P:%s;;", wifiName, wifiPassword);
-  const char *wifiInfo[4];
-  wifiInfo[0] = "Wifi Name: ";
-  wifiInfo[1] = wifiName.c_str();
-  wifiInfo[2] = "Password: ";
-  wifiInfo[3] = wifiPassword;
-  // drawQrCode(qrCodeString, MESSAGE_CONFIGURE_WIFI);
-  drawTexts(wifiInfo);
-  Serial.println(WiFi.softAPIP());
-  Serial.println(myWiFiManager->getConfigPortalSSID());
+void setupHttpServer() {
+  httpServer.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
+    request->send_P(200, "text/html", htmlPage);
+  });
+  httpServer.begin();
 }
 
-void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length)
-{
-  switch (type)
-  {
-  case WStype_DISCONNECTED:
-    Serial.printf("[%u] Disconnected!\n", num);
-    break;
+void setupWebSocket() {
+  webSocket.begin();
+  webSocket.onEvent(webSocketEvent);
+  Serial.println(F("WebSocket started on port 80."));
+}
+
+void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length) {
+  switch (type) {
   case WStype_CONNECTED:
     Serial.printf("[%u] Connected from %s\n", num, webSocket.remoteIP(num).toString().c_str());
+    webSocket.sendTXT(num, "{\"type\":\"hello\",\"device\":\"race-manager-sensor\"}");
+    broadcastSensorState("connect");
+    break;
+  case WStype_DISCONNECTED:
+    Serial.printf("[%u] Disconnected\n", num);
     break;
   case WStype_TEXT:
     handleWebSocketMessage(num, payload, length);
     break;
+  default:
+    break;
   }
 }
 
-void handleWebSocketMessage(uint8_t num, uint8_t *payload, size_t length)
-{
-  String message = (char *)payload;
-  if (message == "Ping")
-  {
-    Serial.println(F("Sending Pong"));
+void handleWebSocketMessage(uint8_t num, uint8_t *payload, size_t length) {
+  String message;
+  message.reserve(length);
+  for (size_t i = 0; i < length; i++) {
+    message += static_cast<char>(payload[i]);
+  }
+
+  if (message == "Ping") {
     webSocket.sendTXT(num, "Pong");
     return;
   }
-  StaticJsonDocument<96> doc;
+
+  StaticJsonDocument<192> doc;
   DeserializationError error = deserializeJson(doc, message);
-  if (error)
-  {
-    Serial.println(F("deserializeJson() failed: "));
+  if (error) {
+    Serial.print(F("Invalid config JSON: "));
     Serial.println(error.f_str());
     return;
   }
 
-  threshold = doc[THRESHOLD];
-  Serial.print("New threshold: " + String(threshold));
+  if (doc["threshold"].is<int>()) {
+    threshold = doc["threshold"].as<int>();
+    Serial.printf("Threshold set to %d\n", threshold);
+  }
 }
 
-void notifyClients(String sensorReadings)
-{
-  webSocket.broadcastTXT(sensorReadings);
-}
+void pollSensors() {
+  const unsigned long now = millis();
+  bool changed = false;
 
-StaticJsonDocument<96> previousReading;
-bool isLongScreen;
-void loop()
-{
-  unsigned long currentTime = millis();
-  unsigned long elapsedTime = currentTime - startTime;
-
-  if (elapsedTime >= 1000)
-  {
-    StaticJsonDocument<96> newReading;
-    newReading["millis"] = String(millis());
-    JsonArray slot_status = newReading.createNestedArray("slot_status");
-    slot_status.add(true);
-    slot_status.add(false);
-
-    for (int i = 0; i < playerCount; i++)
-    {
-      if ((bool)newReading[SLOT_STATUS][i] != (bool)previousReading[SLOT_STATUS][i])
-      {
-
-        break;
-      }
+  for (uint8_t i = 0; i < LANE_COUNT; i++) {
+    const bool rawActive = readLaneActive(lanes[i].pin);
+    if (rawActive != lanes[i].lastRawActive) {
+      lanes[i].lastRawActive = rawActive;
+      lanes[i].changedAt = now;
     }
 
-    String result = "";
-    serializeJson(newReading, result);
-    // move up in production
-    notifyClients(result);
-
-    previousReading = newReading;
-    Serial.println(F("One second has passed!"));
-    Serial.println(currentTime);
-
-    startTime = currentTime;
+    if (rawActive != lanes[i].active && now - lanes[i].changedAt >= SENSOR_DEBOUNCE_MS) {
+      lanes[i].active = rawActive;
+      changed = true;
+      Serial.printf("Lane %u %s at %lu\n", i + 1, rawActive ? "active" : "clear", now);
+    }
   }
-  if (!isLongScreen && currentTime > 300000)
-  {
-    isLongScreen = true;
-    display.clearDisplay();
+
+  if (changed) {
+    broadcastSensorState("change");
   }
-  webSocket.loop();
 }
 
-StaticJsonDocument<96> getJsonSensorData()
-{
-  StaticJsonDocument<96> doc;
-  doc["millis"] = String(millis());
-  JsonArray slot_status = doc.createNestedArray("slot_status");
-  slot_status.add(true);
-  slot_status.add(false);
-
-  return doc;
+bool readLaneActive(uint8_t pin) {
+  return digitalRead(pin) == LOW;
 }
 
-String getJsonInfo()
-{
-  StaticJsonDocument<96> doc;
-  doc["track_type"] = "Analog";
-  doc["sensor_type"] = "Hall effect";
-  doc["chip_Model"] = chipModel;
+void broadcastSensorState(const char *eventType) {
+  StaticJsonDocument<256> doc;
+  doc["type"] = eventType;
+  doc["millis"] = millis();
+  JsonArray slotStatus = doc.createNestedArray("slot_status");
+  JsonArray raw = doc.createNestedArray("raw");
 
-  String result = "";
-  serializeJson(doc, result);
-  return result;
-}
-
-void resetScreen()
-{
-  Serial.println(F("Start text drawing"));
-  display.clearDisplay();
-}
-
-void drawTexts(const char *lines[])
-{
-  resetScreen();
-  for (int i = 0; i < 4; i++)
-  {
-    display.setCursor(cursor_start_x, cursor_start_y + font_height * i);
-    Serial.println(lines[i]);
-    display.println(lines[i]);
+  for (uint8_t i = 0; i < LANE_COUNT; i++) {
+    slotStatus.add(lanes[i].active);
+    raw.add(digitalRead(lanes[i].pin));
   }
-  display.display();
-  Serial.println(F("Finish text drawing"));
-}
 
+  String payload;
+  serializeJson(doc, payload);
+  webSocket.broadcastTXT(payload);
+}

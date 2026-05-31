@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { base } from "$app/paths";
   import { page } from "$app/stores";
   import { Navbar, NavBrand, DarkMode, NavHamburger, NavUl, NavLi } from "flowbite-svelte";

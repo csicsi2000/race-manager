@@ -4,7 +4,9 @@ import type Racer from "$lib/_types/racer";
 /** Compares tha last lap of the racer, and updates the bestlaptime if it is faster. */
 export function getMillisBehind(backRacer: IRacer, frontRacer: IRacer):number{
     let currentLap = backRacer.lapTimes.length-1;
-    console.log(backRacer.lapTimes[currentLap] + " ; " + frontRacer.lapTimes[currentLap])
+    if (currentLap < 0 || frontRacer.lapTimes.length <= currentLap) {
+      return 0;
+    }
     return backRacer.lapTimes[currentLap] - frontRacer.lapTimes[currentLap];
 }
 
@@ -12,14 +14,12 @@ export function getMillisBehind(backRacer: IRacer, frontRacer: IRacer):number{
 export function updateBestLapTime(racer: IRacer):IRacer{
     
     if(racer.lapTimes.length <= 0 || racer.startMillis == -1){
-      console.log("No best lap time");
         return racer;
     }
     let bestTime = racer.lapTimes[0] - racer.startMillis;
 
     for (let i = 1; i < racer.lapTimes.length; i++) {
       let current = racer.lapTimes[i] - racer.lapTimes[i - 1];
-      console.log(current);
       if (current == 0) {
         continue;
       }

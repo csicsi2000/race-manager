@@ -6,8 +6,8 @@ const savedIp = "SavedSensorIp";
 
 export function getSavedSensorSettings(){
     let localSettings = localStorage.getItem(settingsName);
-    if (localSettings != null || localSettings != "") {
-        sensorSetting.set(JSON.parse(localSettings as string) as SensorSettings);
+    if (localSettings) {
+        sensorSetting.set({ ...new SensorSettings(), ...JSON.parse(localSettings) });
     } else {
         sensorSetting.set(new SensorSettings());
     }
@@ -19,7 +19,7 @@ export function saveSensorSettings(settings:string){
 
 export function getSavedSensorIp(){
     let foundIp = localStorage.getItem(savedIp);
-    if (foundIp != null || foundIp != "") {
+    if (foundIp) {
         connectedSensorIP.set(foundIp as string);
     }
 }

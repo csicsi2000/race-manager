@@ -1,14 +1,9 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
-  import type { PageData } from "./$types";
   import QrScanner from "qr-scanner";
-  import { Heading } from "flowbite-svelte";
   import { saveSensorIp } from "$lib/utils/localSettings";
-  import { goto } from "$app/navigation";
   import { routeToPage } from "$lib/utils/navigationHelper";
   import { PageRoutes } from "$lib/_types/enums/pageRoutes";
-
-  export let data: PageData;
 
   let videoElement: HTMLVideoElement;
   let isCameraAvailable: boolean;
@@ -27,12 +22,18 @@
     qrScanner.start();
   });
   function processCodeContent(text: string) {
-    let searchParams = new URL(text);
-    let serverValue = searchParams.searchParams.get("server");
-    console.log(serverValue );
-    if (serverValue?.startsWith("ws")) {
-      routeToPage(PageRoutes.SETTINGS);
-      saveSensorIp(serverValue);
+    try {
+      let searchParams = new URL(text);
+      let serverValue = searchParams.searchParams.get("server");
+      if (serverValue?.startsWith("ws")) {
+        routeToPage(PageRoutes.SETTINGS);
+        saveSensorIp(serverValue);
+      }
+    } catch {
+      if (text.startsWith("ws://") || text.startsWith("wss://")) {
+        routeToPage(PageRoutes.SETTINGS);
+        saveSensorIp(text);
+      }
     }
   }
 
@@ -66,5 +67,7 @@
       Camera is not available. Please allow it for the site.
     </p>
   {/if}
-  <video bind:this={videoElement}></video>
+  <video bind:this={videoElement}>
+    <track kind="captions" />
+  </video>
 </div>
