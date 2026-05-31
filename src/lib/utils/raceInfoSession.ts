@@ -10,11 +10,29 @@ export function startFormation() {
     sessionStatus.set(RaceStatus.FORMATION);
 }
 
+export function finishRace() {
+    sessionStatus.set(RaceStatus.FINISHED);
+}
+
 export function cancelRace() {
+    const race = get(currentRace);
+    if (race) {
+        savePreviousSession(race);
+    }
     sessionStatus.set(RaceStatus.PRACTICE);
     currentRace.set(null);
     newPracticeSession();
-  }
+}
+
+export function closeFinishedRace() {
+    const race = get(currentRace);
+    if (race) {
+        savePreviousSession(race);
+    }
+    sessionStatus.set(RaceStatus.PRACTICE);
+    currentRace.set(null);
+    newPracticeSession();
+}
 
 export function newPracticeSession(){
     let newPractice = structuredClone(get(newRaceInfo));

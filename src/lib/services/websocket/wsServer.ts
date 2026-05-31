@@ -50,13 +50,21 @@ export class WsServer {
     StartWebsocket(server: string): boolean {
         this.savedServer = server;
         connection.set(ConnectionStatus.DISCONNECTED);
-        if (server == null || server == "") {
-            console.warn("Missing websocket server info");
-            return false;
+        let targetServer = server;
+        
+        if (!targetServer || targetServer === "") {
+            if (typeof window !== "undefined" && window.location.hostname) {
+                targetServer = window.location.hostname + ":81";
+                console.log("No IP provided, defaulting to host:", targetServer);
+            } else {
+                console.warn("Missing websocket server info");
+                return false;
+            }
         }
-        const websocketUrl = normalizeWebsocketUrl(server);
+        
+        const websocketUrl = normalizeWebsocketUrl(targetServer);
         try {
-            console.log("Connection to websocket")
+            console.log("Connection to websocket:", websocketUrl)
             connection.set(ConnectionStatus.DISCONNECTED);
             WsServer.ws = new WebsocketBuilder(websocketUrl)
                 .withBuffer(new ArrayQueue())           // buffer messages when disconnected

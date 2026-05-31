@@ -10,3 +10,7 @@ export const connectedSensorIP = writable<string>("");
 export const sensorReadings = writable(new SensorData());
 
 export const sensorSetting = writable(new SensorSettings());
+
+export const settingsModalOpen = writable<boolean>(false);
+
+export const isSimulated = writable<boolean>(false);

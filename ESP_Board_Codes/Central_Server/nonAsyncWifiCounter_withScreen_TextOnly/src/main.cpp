@@ -1,15 +1,19 @@
 #if defined(ESP8266)
 #include <ESP8266WiFi.h>
 #include <ESPAsyncTCP.h>
+#include <ESP8266mDNS.h>
+#include <LittleFS.h>
 #elif defined(ESP32)
 #include <WiFi.h>
 #include <AsyncTCP.h>
+#include <ESPmDNS.h>
+#include <LittleFS.h>
 #endif
 
 #include <ArduinoJson.h>
 #include <ESPAsyncWebServer.h>
 #include <WebSocketsServer.h>
-#include <WiFiManager.h>
+#include <DNSServer.h>
 
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
@@ -44,46 +48,15 @@ struct LaneState {
 };
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
-AsyncWebServer httpServer(81);
-WebSocketsServer webSocket(80, "*");
-WiFiManager wifiManager;
+AsyncWebServer httpServer(80);
+WebSocketsServer webSocket(81, "*");
+const byte DNS_PORT = 53;
+DNSServer dnsServer;
 
 LaneState lanes[LANE_COUNT];
 bool displayReady = false;
 unsigned long lastHeartbeatAt = 0;
 int threshold = 100;
-
-const char *htmlPage = R"rawliteral(
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Race Manager Sensor</title>
-  <style>
-    body { font-family: system-ui, sans-serif; margin: 2rem; line-height: 1.4; }
-    code, pre { background: #f1f5f9; border-radius: .4rem; padding: .2rem .4rem; }
-    .ok { color: #047857; font-weight: 700; }
-  </style>
-</head>
-<body>
-  <h1>Race Manager Sensor</h1>
-  <p class="ok">Sensor bridge is running.</p>
-  <p>Use this WebSocket URL in the app:</p>
-  <pre id="url"></pre>
-  <p>Messages are shown below for quick testing.</p>
-  <pre id="messages"></pre>
-  <script>
-    const url = `ws://${location.hostname}:80`;
-    document.getElementById("url").textContent = url;
-    const messages = document.getElementById("messages");
-    const ws = new WebSocket(url);
-    ws.onopen = () => ws.send("Ping");
-    ws.onmessage = (event) => messages.textContent = `${event.data}\n${messages.textContent}`.slice(0, 3000);
-  </script>
-</body>
-</html>
-)rawliteral";
 
 void setupDisplay();
 void drawStatus(const char *line1, const char *line2 = "", const char *line3 = "", const char *line4 = "");
@@ -110,6 +83,10 @@ void setup() {
 }
 
 void loop() {
+  dnsServer.processNextRequest();
+#if defined(ESP8266)
+  MDNS.update();
+#endif
   webSocket.loop();
   pollSensors();
 
@@ -156,25 +133,56 @@ void setupSensors() {
 
 void setupWifi() {
   WiFi.mode(WIFI_AP_STA);
-  wifiManager.setConfigPortalTimeout(180);
-  wifiManager.setBreakAfterConfig(true);
-  drawStatus("WiFi setup", AP_NAME, AP_PASSWORD);
-
-  if (!wifiManager.autoConnect(AP_NAME, AP_PASSWORD)) {
-    Serial.println(F("WiFi setup failed. Restarting."));
-    delay(1000);
-    ESP.restart();
+  WiFi.begin();
+  
+  drawStatus("WiFi setup", "Connecting...");
+  unsigned long start = millis();
+  while (WiFi.status() != WL_CONNECTED && millis() - start < 10000) {
+    delay(500);
+    Serial.print(".");
   }
 
+  if (WiFi.status() == WL_CONNECTED) {
+    Serial.println("\nConnected to WiFi.");
+    WiFi.mode(WIFI_STA);
+  } else {
+    Serial.println("\nFailed to connect. Starting AP.");
+    WiFi.mode(WIFI_AP);
+    WiFi.softAP(AP_NAME, AP_PASSWORD);
+  }
+
+  IPAddress myIP = (WiFi.status() == WL_CONNECTED) ? WiFi.localIP() : WiFi.softAPIP();
   Serial.print(F("IP address: "));
-  Serial.println(WiFi.localIP());
-  drawStatus("Connected", WiFi.localIP().toString().c_str(), "HTTP: 81", "WebSocket: 80");
+  Serial.println(myIP);
+  
+  if (!MDNS.begin("racemanager")) {
+    Serial.println("Error setting up MDNS responder!");
+  } else {
+    Serial.println("mDNS responder started");
+    MDNS.addService("http", "tcp", 80);
+    MDNS.addService("ws", "tcp", 81);
+  }
+
+  dnsServer.start(DNS_PORT, "*", myIP);
+  drawStatus("Connected", myIP.toString().c_str(), "racemanager.local", "HTTP: 80 WS: 81");
 }
 
 void setupHttpServer() {
-  httpServer.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
-    request->send_P(200, "text/html", htmlPage);
+  if(!LittleFS.begin()) {
+    Serial.println("An Error has occurred while mounting LittleFS");
+  }
+
+  httpServer.serveStatic("/", LittleFS, "/").setDefaultFile("index.html");
+
+  httpServer.onNotFound([](AsyncWebServerRequest *request) {
+    if (request->method() == HTTP_OPTIONS) {
+      request->send(200);
+    } else {
+      IPAddress myIP = (WiFi.status() == WL_CONNECTED) ? WiFi.localIP() : WiFi.softAPIP();
+      request->redirect("http://" + myIP.toString());
+    }
   });
+
   httpServer.begin();
 }
 

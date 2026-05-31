@@ -4,86 +4,102 @@
 @tailwind utilities;
 
 html {
-    overflow-y:scroll;
+    overflow-y: scroll;
+    font-family: 'Inter', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Outfit', sans-serif;
 }
 
 body {
   min-height: 100vh;
-  background:
-    linear-gradient(180deg, rgba(248, 250, 252, 0.96), rgba(241, 245, 249, 0.96)),
-    repeating-linear-gradient(90deg, rgba(15, 23, 42, 0.04) 0 1px, transparent 1px 88px);
+  background: #f8fafc;
+  color: #1e293b;
 }
 
 .dark body {
-  background:
-    linear-gradient(180deg, rgba(17, 24, 39, 0.98), rgba(3, 7, 18, 0.98)),
-    repeating-linear-gradient(90deg, rgba(148, 163, 184, 0.06) 0 1px, transparent 1px 88px);
+  background: #0f172a;
+  color: #f8fafc;
 }
 
 /* width */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #888;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.4);
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
-      .no-scrollbar::-webkit-scrollbar {
-          display: none;
-      }
-     /* Hide scrollbar for IE, Edge and Firefox */
-      .no-scrollbar {
-          -ms-overflow-style: none;  /* IE and Edge */
-          scrollbar-width: none;  /* Firefox */
-    }
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
 
-  @media only screen and (min-width: 600px) {
-    .light-container {
-      width: 100px;
-      padding: 0 10px;
-      border-radius: 15px;
-      background: black;
-      margin: 0 5px;
-    }
-
-    .light {
-      padding-top: 100%;
-      border-radius: 50%;
-      background: #8080805c;
-      margin-bottom: 10px;
-      margin-top: 10px;
-    }
+@media only screen and (min-width: 600px) {
+  .light-container {
+    width: 100px;
+    padding: 0 10px;
+    border-radius: 15px;
+    background: black;
+    margin: 0 5px;
   }
 
-  @media only screen and (max-width: 600px) {
-    .light-container {
-      width: 60px;
-      padding: 0 5px;
-      border-radius: 8px;
-      background: black;
-      margin: 0 3px;
-    }
-
-    .light {
-      padding-top: 100%;
-      border-radius: 50%;
-      background: #8080805c;
-      margin-bottom: 5px;
-      margin-top: 5px;
-    }
-
+  .light {
+    padding-top: 100%;
+    border-radius: 50%;
+    background: #8080805c;
+    margin-bottom: 10px;
+    margin-top: 10px;
   }
+}
+
+@media only screen and (max-width: 600px) {
+  .light-container {
+    width: 60px;
+    padding: 0 5px;
+    border-radius: 8px;
+    background: black;
+    margin: 0 3px;
+  }
+
+  .light {
+    padding-top: 100%;
+    border-radius: 50%;
+    background: #8080805c;
+    margin-bottom: 5px;
+    margin-top: 5px;
+  }
+}

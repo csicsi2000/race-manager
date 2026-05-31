@@ -22,6 +22,10 @@
   import { sessionStatus } from "$lib/stores/raceInfos";
   import SpeedDial from "$lib/components/navigation/SpeedDial.svelte";
   import TopNavbar from "$lib/components/navigation/TopNavbar.svelte";
+  import SettingsModal from "$lib/components/settings/SettingsModal.svelte";
+  import { initSimulator } from "$lib/services/simulator";
+  import DevPanel from "$lib/components/DevPanel.svelte";
+  import { onMount } from "svelte";
 
   onNavigate((navigation) => {
 
@@ -34,6 +38,11 @@
       });
     });
   });
+
+  onMount(() => {
+    initSimulator();
+  });
+
   connection.subscribe(() => console.warn("Connection state changed" + $connection + ";" + ConnectionStatus.CONNECTED));
 </script>
 
@@ -49,8 +58,8 @@
   <div class="p-4">
     <slot />
   </div>
-  <BottomNav position="fixed" navType="group" classInner="grid-cols-5">
-    <BottomNavHeader slot="header" style="pointer-events: none;">
+  <BottomNav position="fixed" navType="group" classInner="grid-cols-4">
+    <BottomNavHeader slot="header" style="pointer-events: none;" classInner="grid max-w-md grid-cols-4 gap-1 p-1 mx-auto my-2 bg-gray-100 rounded-lg dark:bg-gray-600">
       {#each Object.keys(RaceStatus) as state}
         {#if isNaN(Number(state))}
           {#if state == RaceStatus[$sessionStatus]}
@@ -64,4 +73,6 @@
   </BottomNav>
   <SpeedDial />
 </div>
+<SettingsModal />
+<DevPanel />
 <div class="min-h-12" />

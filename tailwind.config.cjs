@@ -9,7 +9,13 @@ const config = {
   ],
 
   theme: {
-    extend: {colors: generateColors()},
+    extend: {
+      colors: generateColors(),
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'],
+        heading: ['Outfit', 'sans-serif'],
+      }
+    },
   },
   darkMode: 'class',
   plugins: [

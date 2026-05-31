@@ -55,50 +55,49 @@ export let isStickyHeader: boolean = false;
   }
 </script>
 
-<div>
-  <Table
-    shadow
-    striped={true}
-    divClass="tabular-nums dark:bg-gray-600 max-h-[70svh] h-[70svh] overflow-y-auto scroll-auto scroll-smooth no-scrollbar drop-shadow-2xl "
-  >
-  <caption
-  bind:this={tableChild}
-  class="p-5 text-lg font-semibold text-left text-gray-900 bg-{racer.color}-300 dark:text-white dark:bg-{racer.color}-700 {headerClass} top-[-1px]"
-  >
-  {racer.name}
-  <div class="grid gap-6 mb-6 grid-cols-2">
-
-      <p class="mt-1 text-sm font-normal text-gray-800 dark:text-gray-100">
-        Best lap time: {bestLapTime}
+<div class="flex flex-col dark:bg-gray-800 bg-white rounded-2xl drop-shadow-xl border border-gray-300 dark:border-gray-700 overflow-hidden h-[70svh]">
+  
+  <!-- Fixed Header -->
+  <div class="p-4 text-lg font-semibold text-left text-gray-900 bg-{racer.color}-200 dark:text-white dark:bg-{racer.color}-800 border-b border-gray-300 dark:border-gray-700 shrink-0">
+    <div class="mb-2">{racer.name}</div>
+    <div class="flex flex-wrap items-center justify-between gap-4">
+      <p class="text-sm font-normal text-gray-800 dark:text-gray-100">
+        Best lap: <span class="font-bold">{bestLapTime}</span>
       </p>
-      {#if !manualScrollOnly}
-      <Toggle bind:checked={isAutoScrolling}>Auto scroll</Toggle>
-      {/if}
-      <Button size="xs" color="alternative" disabled={racer.lapTimes.length === 0} on:click={() => removeLap(racer.lapTimes.length - 1)}>Undo last</Button>
+      <div class="flex items-center gap-4">
+        {#if !manualScrollOnly}
+          <Toggle bind:checked={isAutoScrolling} size="small" class="whitespace-nowrap text-sm font-normal text-gray-800 dark:text-gray-100">Auto scroll</Toggle>
+        {/if}
+        <Button size="xs" color="alternative" disabled={racer.lapTimes.length === 0} on:click={() => removeLap(racer.lapTimes.length - 1)} class="whitespace-nowrap">Undo last</Button>
+      </div>
+    </div>
   </div>
-    </caption>
 
-    <TableHead theadClass="text-gray-800 dark:text-gray-100 {headerClass} top-[6rem] dark:bg-{racer.color}-600 bg-{racer.color}-300">
-      <TableHeadCell class="text-gray-800 dark:text-gray-100">Lap</TableHeadCell>
-      <TableHeadCell class="text-gray-800 dark:text-gray-100 text-right">Lap Time</TableHeadCell>
-      <TableHeadCell class="text-gray-800 dark:text-gray-100 text-right">Overall Time</TableHeadCell>
-      <TableHeadCell class="text-gray-800 dark:text-gray-100 text-right">Fix</TableHeadCell>
-    </TableHead>
-    <TableBody tableBodyClass="divide-y-2 dark:divide-gray-500 divide-gray-400">
-      {#each racer.lapTimes as times, index}
-        <TableBodyRow>
-          <TableBodyCell >{index + 1}</TableBodyCell>
-          {#if index == 0}
-            <TableBodyCell class="text-right">{formatMs(times - racer.startMillis)}</TableBodyCell>
-          {:else}
-            <TableBodyCell class="text-right">{formatMs(times - racer.lapTimes[index - 1])}</TableBodyCell>
-          {/if}
-          <TableBodyCell class="text-right">{formatMs(times)}</TableBodyCell>
-          <TableBodyCell class="text-right">
-            <button class="text-xs font-medium text-red-700 hover:underline dark:text-red-300" on:click={() => removeLap(index)}>Delete</button>
-          </TableBodyCell>
-        </TableBodyRow>
-      {/each}
-    </TableBody>
-  </Table>
+  <!-- Scrolling Table -->
+  <div class="flex-1 overflow-y-auto scroll-smooth no-scrollbar" bind:this={tableChild}>
+    <Table shadow={false} striped={false} divClass="tabular-nums">
+      <TableHead theadClass="text-gray-800 dark:text-gray-100 sticky top-0 dark:bg-gray-700 bg-gray-100 z-10 border-b border-gray-300 dark:border-gray-700">
+        <TableHeadCell class="text-gray-800 dark:text-gray-100">Lap</TableHeadCell>
+        <TableHeadCell class="text-gray-800 dark:text-gray-100 text-right">Lap Time</TableHeadCell>
+        <TableHeadCell class="text-gray-800 dark:text-gray-100 text-right">Overall Time</TableHeadCell>
+        <TableHeadCell class="text-gray-800 dark:text-gray-100 text-right">Fix</TableHeadCell>
+      </TableHead>
+      <TableBody tableBodyClass="divide-y divide-gray-200 dark:divide-gray-700">
+        {#each racer.lapTimes as times, index}
+          <TableBodyRow class="hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
+            <TableBodyCell class="font-medium text-gray-900 dark:text-white">{index + 1}</TableBodyCell>
+            {#if index == 0}
+              <TableBodyCell class="text-right font-semibold">{formatMs(times - racer.startMillis)}</TableBodyCell>
+            {:else}
+              <TableBodyCell class="text-right font-semibold">{formatMs(times - racer.lapTimes[index - 1])}</TableBodyCell>
+            {/if}
+            <TableBodyCell class="text-right text-gray-500 dark:text-gray-400">{formatMs(times)}</TableBodyCell>
+            <TableBodyCell class="text-right">
+              <button class="text-xs font-medium text-red-500 hover:text-red-700 hover:underline transition-colors" on:click={() => removeLap(index)}>Delete</button>
+            </TableBodyCell>
+          </TableBodyRow>
+        {/each}
+      </TableBody>
+    </Table>
+  </div>
 </div>

@@ -2,21 +2,22 @@
   import Light from "$lib/_types/light";
   import { LightColors } from "$lib/_types/enums/lightColors";
   import LightStrip from "$lib/components/animations/LightStrip.svelte";
-  import { Button, Modal } from "flowbite-svelte";
+  import { Button, Modal, Badge } from "flowbite-svelte";
   import { LightStates } from "$lib/_types/enums/lightStates";
   import { base } from "$app/paths";
   import { sessionStatus, newRaceInfo } from "$lib/stores/raceInfos";
   import { RaceStatus } from "$lib/_types/enums/raceStatus";
   import { formatMs } from "$lib/utils/converters/timeConverter";
-  import { cancelRace, newRaceSession } from "$lib/utils/raceInfoSession";
-  import { PageRoutes } from "$lib/_types/enums/pageRoutes";
+  import { cancelRace } from "$lib/utils/raceInfoSession";
+  import { sensorReadings, sensorSetting } from "$lib/stores/serverStatus";
+  import { get } from "svelte/store";
 
   const LIGHT_ON_INTERVAL = 1000;
 
   let state = LightStates.IDLE;
   let nextLightStrip = 0;
   let result = "00.000";
-  let startTime: number;
+  let startTime: number = -1;
   let timerId: number | undefined;
   let fuzzerId: number | undefined;
   let best = localStorage.best || 0;
@@ -27,16 +28,86 @@
   let audioLightsOut = new Audio(base + "/sounds/lights-out.mp3");
 
   let raceStatus: RaceStatus;
-
   let modalState = false;
 
-sessionStatus.subscribe(x => {
-  raceStatus = x;
-  if(raceStatus == RaceStatus.FORMATION){
-    modalState = true;
-    formationLights();
-  }
-})
+  // --- Car position & false start tracking ---
+  let laneBlocked: boolean[] = [];
+  let falseStarts: boolean[] = [];
+  let allReady = false;
+  let countdownActive = false;
+  let hasFalseStart = false;
+
+  // --- Reaction time tracking ---
+  let lightsOutTime: number = -1;
+  let reactionTimes: (number | null)[] = [];  // null = not yet reacted
+  let trackingReaction = false;
+
+  // Subscribe to sensor readings for live position + reaction tracking
+  let prevBlocked: boolean[] = [];
+
+  sensorReadings.subscribe((reading) => {
+    if (!reading || reading.millis < 0) return;
+    const settings = get(sensorSetting);
+    const lanes = settings.laneCount || 2;
+
+    const newBlocked = Array(lanes).fill(false).map((_, i) =>
+      i < reading.slot_status.length ? reading.slot_status[i] : false
+    );
+
+    // False start detection: car was on sensor and left during countdown
+    if (countdownActive && prevBlocked.length > 0) {
+      for (let i = 0; i < lanes; i++) {
+        if (prevBlocked[i] && !newBlocked[i] && !falseStarts[i]) {
+          falseStarts = [...falseStarts];
+          falseStarts[i] = true;
+          hasFalseStart = true;
+
+          // Record jump start on the racer
+          const racers = get(newRaceInfo).racers;
+          if (racers[i]) {
+            racers[i].jumpStart += 1;
+          }
+
+          // ABORT the countdown!
+          abortCountdown();
+        }
+      }
+    }
+
+    // Reaction time: after lights out, detect when each car LEAVES the sensor
+    if (trackingReaction && prevBlocked.length > 0) {
+      for (let i = 0; i < lanes; i++) {
+        if (prevBlocked[i] && !newBlocked[i] && reactionTimes[i] === null) {
+          reactionTimes[i] = Date.now() - lightsOutTime;
+          reactionTimes = [...reactionTimes]; // trigger reactivity
+        }
+      }
+      // Stop tracking once all have reacted
+      if (reactionTimes.every(t => t !== null)) {
+        trackingReaction = false;
+      }
+    }
+
+    prevBlocked = [...newBlocked];
+    laneBlocked = newBlocked;
+    allReady = laneBlocked.length > 0 && laneBlocked.every(b => b);
+  });
+
+  sessionStatus.subscribe(x => {
+    raceStatus = x;
+    if (raceStatus == RaceStatus.FORMATION) {
+      modalState = true;
+      formationLights();
+      const lanes = get(sensorSetting).laneCount || 2;
+      falseStarts = Array(lanes).fill(false);
+      reactionTimes = Array(lanes).fill(null);
+      hasFalseStart = false;
+      countdownActive = false;
+      trackingReaction = false;
+      lightsOutTime = -1;
+      prevBlocked = [];
+    }
+  });
 
   for (let i = 0; i < 5; i++) {
     lights.push([]);
@@ -45,49 +116,66 @@ sessionStatus.subscribe(x => {
     }
   }
 
-  function cancelRaceLights(){
+  function cancelRaceLights() {
     clearLights();
-    modalState =false;
+    countdownActive = false;
+    trackingReaction = false;
+    modalState = false;
     cancelRace();
+  }
+
+  /** Called when a false start is detected during countdown */
+  function abortCountdown() {
+    clearLights();
+    countdownActive = false;
+    state = LightStates.FORMATION; // go back so Reset button shows
+    audioStartLights.pause();
+    audioStartLights.currentTime = 0;
+    result = "FALSE START";
+  }
+
+  /** Reset after false start — go back to formation */
+  function resetAfterFalseStart() {
+    const lanes = get(sensorSetting).laneCount || 2;
+    falseStarts = Array(lanes).fill(false);
+    hasFalseStart = false;
+    countdownActive = false;
+    prevBlocked = [];
+    formationLights();
+    result = "00.000";
+    sessionStatus.set(RaceStatus.FORMATION);
   }
 
   //#region Start race
 
   export function clickStartRace() {
-  if (state === LightStates.FORMATION) {
-    clearLights();
-    state = LightStates.RUNNING;
-    setTimeout(() => start(),1000)
-    
-    console.log("Countdown started")
-    sessionStatus.set(RaceStatus.RACE);
+    if (state === LightStates.FORMATION && !hasFalseStart) {
+      clearLights();
+      state = LightStates.RUNNING;
+      countdownActive = true;
+      setTimeout(() => start(), 1000);
 
+      console.log("Countdown started");
+      sessionStatus.set(RaceStatus.RACE);
     }
   }
 
-  function getStartTimeDiff(){
-    state = LightStates.IDLE;
-      const timeDiff = Date.now() - startTime;
-      result = formatMs(timeDiff);
-      best = best === 0 ? timeDiff : Math.min(best, timeDiff);
-      localStorage.best = best;
-
-      return result;
-  }
-
-  function pauseCountDown(){
+  function pauseCountDown() {
     if (state === LightStates.RUNNING) {
       state = LightStates.IDLE;
-      sessionStatus.set(RaceStatus.FORMATION)
+      countdownActive = false;
+      sessionStatus.set(RaceStatus.FORMATION);
       result = "Reset";
       audioStartLights.pause();
       clearInterval(timerId);
       clearTimeout(fuzzerId);
-      console.log("Countdown paused")
+      console.log("Countdown paused");
     }
   }
 
   function start() {
+    // Don't start if a false start already happened
+    if (hasFalseStart) return;
     nextLightStrip = 0;
     result = "00.000";
     startTime = -1;
@@ -98,6 +186,11 @@ sessionStatus.subscribe(x => {
   }
 
   function turnOnNextLight() {
+    // Abort if false start happened during the light sequence
+    if (hasFalseStart) {
+      clearInterval(timerId);
+      return;
+    }
     if (nextLightStrip === 5) {
       fuzzedLightsOut();
       clearInterval(timerId);
@@ -109,14 +202,27 @@ sessionStatus.subscribe(x => {
   }
 
   function fuzzedLightsOut() {
-    // delay for the lights
     const fuzzyInterval = Math.random() * 2800 + 200;
     fuzzerId = setTimeout(() => {
+      if (hasFalseStart) return;
       clearLights();
-      startTime = Date.now();
+      lightsOutTime = Date.now();
+      startTime = lightsOutTime;
       state = LightStates.WAITING;
+      countdownActive = false;
+
+      // Start tracking reaction times
+      const lanes = get(sensorSetting).laneCount || 2;
+      reactionTimes = Array(lanes).fill(null);
+      trackingReaction = true;
+
       audioLightsOut.play();
-      setTimeout(() => modalState = false, 3000);
+      // Keep modal open longer to show reaction times
+      setTimeout(() => {
+        if (!hasFalseStart) {
+          modalState = false;
+        }
+      }, 5000);
     }, fuzzyInterval);
   }
 
@@ -146,37 +252,106 @@ sessionStatus.subscribe(x => {
     });
   }
 
-
+  function getRacerName(index: number): string {
+    const racers = get(newRaceInfo).racers;
+    return racers[index]?.name ?? `Lane ${index + 1}`;
+  }
 </script>
 
 <Modal title="{RaceStatus[raceStatus]}" bind:open={modalState} dismissable={false}>
-<div id="light-parent">
-  <div id="lights-container">
-    <div id="connector"></div>
-    {#key state}
-      {#each lights as lightCol}
-        <LightStrip bind:lightCol />
-      {/each}
-    {/key}
-  </div>
-  <div class="grid gap-6 mb-6 md:grid-cols-2">
-  <h1 class="time">{result !== null ? result : ""}</h1>
-  <h1 class="time">{result !== null ? result : ""}</h1>
-  </div>
-  <div>Your best: {formatMs(best)}</div>
-  <div class="grid gap-6 mb-6 md:grid-cols-2">
-{#if raceStatus == RaceStatus.FORMATION}
-  <Button color="green" pill on:click={clickStartRace}>Start Countdown</Button>
-  {:else if state == LightStates.RUNNING}
-  <Button color="yellow" pill on:click={pauseCountDown} >Reset</Button>
-  {:else}
-  <Button color="yellow" pill on:click={pauseCountDown} disabled>Disabled</Button>
+  <div id="light-parent">
+    <!-- Car Position Status -->
+    {#if state === LightStates.FORMATION || countdownActive}
+      <div class="w-full mb-4">
+        <p class="text-sm font-semibold text-gray-600 dark:text-gray-300 mb-2 text-center">Car Positions</p>
+        <div class="flex justify-center gap-4">
+          {#each laneBlocked as blocked, i}
+            <div class="flex flex-col items-center gap-1">
+              <span class="text-sm font-medium dark:text-white">{getRacerName(i)}</span>
+              {#if falseStarts[i]}
+                <Badge color="red" rounded large class="animate-pulse">⚠ FALSE START</Badge>
+              {:else if blocked}
+                <Badge color="green" rounded large>✓ Ready</Badge>
+              {:else}
+                <Badge color="yellow" rounded large>✗ Not on sensor</Badge>
+              {/if}
+            </div>
+          {/each}
+        </div>
+        {#if allReady && !hasFalseStart}
+          <p class="text-center text-green-600 dark:text-green-400 font-bold mt-2 text-sm">All cars in position!</p>
+        {/if}
+      </div>
+    {/if}
 
-{/if}
-  <Button color="alternative" pill on:click={cancelRaceLights}>Cancel race</Button>
-</div>
-</div>
+    <!-- Reaction Times (after lights out) -->
+    {#if state === LightStates.WAITING && lightsOutTime > 0}
+      <div class="w-full mb-4">
+        <p class="text-sm font-semibold text-gray-600 dark:text-gray-300 mb-2 text-center">Reaction Times</p>
+        <div class="flex justify-center gap-6">
+          {#each reactionTimes as rt, i}
+            <div class="flex flex-col items-center gap-1">
+              <span class="text-sm font-medium dark:text-white">{getRacerName(i)}</span>
+              {#if rt !== null}
+                <Badge color={rt < 300 ? "green" : rt < 600 ? "yellow" : "red"} rounded large class="text-lg font-bold tabular-nums">
+                  {formatMs(rt)}
+                </Badge>
+              {:else}
+                <Badge color="dark" rounded large class="animate-pulse">Waiting...</Badge>
+              {/if}
+            </div>
+          {/each}
+        </div>
+      </div>
+    {/if}
+
+    <div id="lights-container">
+      <div id="connector"></div>
+      {#key state}
+        {#each lights as lightCol}
+          <LightStrip bind:lightCol />
+        {/each}
+      {/key}
+    </div>
+    <div class="grid gap-6 mb-6 md:grid-cols-2">
+      <h1 class="time">{result !== null ? result : ""}</h1>
+      <h1 class="time">{result !== null ? result : ""}</h1>
+    </div>
+    <div>Your best: {formatMs(best)}</div>
+
+    <!-- False start warning -->
+    {#if hasFalseStart}
+      <div class="w-full my-3 p-3 bg-red-100 dark:bg-red-900 border border-red-300 dark:border-red-700 rounded-lg text-center">
+        <p class="text-red-700 dark:text-red-300 font-bold text-lg">⚠ False Start!</p>
+        <p class="text-red-600 dark:text-red-400 text-sm mt-1">
+          {#each falseStarts as fs, i}
+            {#if fs}
+              <span class="font-semibold">{getRacerName(i)}</span>{" "}
+            {/if}
+          {/each}
+          moved before lights out.
+        </p>
+      </div>
+    {/if}
+
+    <div class="grid gap-6 mb-6 md:grid-cols-2">
+      {#if hasFalseStart}
+        <!-- False start: show Reset button -->
+        <Button color="yellow" pill on:click={resetAfterFalseStart}>Reset (place cars again)</Button>
+      {:else if raceStatus == RaceStatus.FORMATION}
+        <Button color="green" pill on:click={clickStartRace} disabled={!allReady}>
+          {#if allReady}Start Countdown{:else}Waiting for cars...{/if}
+        </Button>
+      {:else if state == LightStates.RUNNING}
+        <Button color="yellow" pill on:click={pauseCountDown}>Reset</Button>
+      {:else}
+        <Button color="yellow" pill on:click={pauseCountDown} disabled>Disabled</Button>
+      {/if}
+      <Button color="alternative" pill on:click={cancelRaceLights}>Cancel race</Button>
+    </div>
+  </div>
 </Modal>
+
 <style>
   #light-parent {
     height: 100%;
